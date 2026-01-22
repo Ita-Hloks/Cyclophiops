@@ -1,0 +1,45 @@
+# ========== Build results ==========
+bin/
+obj/
+
+# ========== Visual Studio ==========
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ========== Visual Studio Code ==========
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ========== Rider / ReSharper ==========
+.idea/
+*.DotSettings.user
+
+# ========== .NET ==========
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# ========== NuGet ==========
+packages/
+*.nupkg
+.nuget/
+
+# ========== Test ==========
+TestResults/
+
+# ========== Publish ==========
+publish/
+artifacts/
+
+# ========== OS ==========
+.DS_Store
+Thumbs.db
+desktop.ini
