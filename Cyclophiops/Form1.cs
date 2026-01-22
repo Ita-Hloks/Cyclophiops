@@ -27,12 +27,18 @@ namespace Cyclophiops
             textBox1.Text = "注册表获取完成";
         }
 
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+        }
+
         private void Label1_Click(object sender, EventArgs e)
         {
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
+            GetRegeditFileName.Get();
+            textBox1.Text = "SOFTWARE获取完成";
         }
     }
 }

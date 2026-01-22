@@ -31,29 +31,28 @@
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button1.Location = new System.Drawing.Point(51, 155);
+            this.button1.Location = new System.Drawing.Point(6, 109);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(77, 46);
+            this.button1.Size = new System.Drawing.Size(105, 46);
             this.button1.TabIndex = 0;
-            this.button1.Text = "查询";
+            this.button1.Text = "查询基本信息";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // textBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(51, 59);
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.textBox1.Location = new System.Drawing.Point(0, 5);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(266, 71);
+            this.textBox1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.textBox1.Size = new System.Drawing.Size(582, 50);
             this.textBox1.TabIndex = 1;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
@@ -62,18 +61,30 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(48, 32);
+            this.label1.Location = new System.Drawing.Point(3, 74);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(150, 15);
             this.label1.TabIndex = 2;
             this.label1.Text = "点击按钮读取注册表 ";
             this.label1.Click += new System.EventHandler(this.Label1_Click);
             // 
+            // button2
+            // 
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.button2.Location = new System.Drawing.Point(140, 110);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(124, 45);
+            this.button2.TabIndex = 3;
+            this.button2.Text = "查询Software";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 303);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
@@ -92,6 +103,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button2;
     }
 }
 

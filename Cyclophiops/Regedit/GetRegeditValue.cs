@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Cyclophiops.Regedit;
 
 namespace Cyclophiops.Regedit
 {
@@ -12,7 +13,6 @@ namespace Cyclophiops.Regedit
         public static void Get()
         {
             string logName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
-            string logPath = $@"D:/{logName}";
             try
             {
                 var configs = new[]
@@ -34,8 +34,7 @@ namespace Cyclophiops.Regedit
                     )
                 };
                 RegistryReaderUtil.ReadMultipleRegistriesToFile(
-                    configs,
-                    logPath
+                    configs
                 );
             }
             catch (Exception ex)
