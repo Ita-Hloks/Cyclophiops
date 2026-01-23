@@ -12,7 +12,7 @@ namespace Cyclophiops.Regedit
             {
                 var config = new RegistryEnumerateConfig(
                     @"",
-                    "USERS-SOFTWARE 注册表树",
+                    "USERS 注册表树",
                     RegistryHive.Users,
                     RegistryView.Registry64,
                     null,

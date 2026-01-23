@@ -24,7 +24,7 @@ namespace Cyclophiops
         private void Button1_Click(object sender, EventArgs e)
         {
             GetRegeditValue.Get();
-            textBox1.Text = "注册表获取完成";
+            textBox1.Text = "B1已触发";
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -38,7 +38,12 @@ namespace Cyclophiops
         private void button2_Click(object sender, EventArgs e)
         {
             GetRegeditFileName.Get();
-            textBox1.Text = "SOFTWARE获取完成";
+            textBox1.Text = "B2已触发";
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

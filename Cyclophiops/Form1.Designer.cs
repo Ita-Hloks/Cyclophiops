@@ -93,6 +93,7 @@
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.Text = "Cyclophiops";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
