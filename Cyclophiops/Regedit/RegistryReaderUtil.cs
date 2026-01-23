@@ -1,270 +1,67 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security;
 using System.Text;
+using Cyclophiops.Export;
 using Microsoft.Win32;
 
 namespace Cyclophiops.Regedit
 {
-    // ==================== 全局配置 ====================
-    public static class RegistryConfig
-    {
-        private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log");
-        private static readonly string LogFile = Path.Combine(LogDirectory, "registry.log");
-
-        private static void EnsureLogDirectoryExists()
-        {
-            if (!Directory.Exists(LogDirectory))
-            {
-                Directory.CreateDirectory(LogDirectory);
-            }
-        }
-
-        private static void WriteLog(string level, string message, Exception ex = null)
-        {
-            try
-            {
-                EnsureLogDirectoryExists();
-                var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                var log = $"[{timestamp}] |{level}| {message}";
-                if (ex != null)
-                {
-                    log += $"\n{ex}";
-                }
-
-                log += "\n";
-                File.AppendAllText(LogFile, log, Encoding.UTF8);
-            }
-            catch
-            {
-            }
-        }
-
-        public static void LogInfo(string message) => WriteLog("INFO", message);
-
-        public static void LogError(string message, Exception ex = null) => WriteLog("ERROR", message, ex);
-
-        internal static string GetExportPath(string baseName)
-        {
-            EnsureLogDirectoryExists();
-            var fileName = $"{baseName}_{DateTime.Now:yyyy-MM-dd_HHmmss}.txt";
-            return Path.Combine(LogDirectory, fileName);
-        }
-    }
-
-    // ==================== 配置类 ====================
-    public class RegistryReadConfig
-    {
-        public readonly string Path;
-        public readonly string[] ValueNames;
-        public readonly string Title;
-        public readonly RegistryHive Hive;
-        public readonly RegistryView View;
-
-        public RegistryReadConfig(string path, string[] valueNames, string title = null,
-            RegistryHive hive = RegistryHive.LocalMachine, RegistryView view = RegistryView.Registry64)
-        {
-            Path = path;
-            ValueNames = valueNames;
-            Title = title;
-            Hive = hive;
-            View = view;
-        }
-    }
-
-    public class RegistryEnumerateConfig
-    {
-        public readonly string Path;
-        public readonly string Title;
-        public readonly RegistryHive Hive;
-        public readonly RegistryView View;
-        public readonly Func<string, bool> Filter;
-        public readonly EnumerateOptions Options;
-
-        public RegistryEnumerateConfig(string path, string title = null,
-            RegistryHive hive = RegistryHive.LocalMachine, RegistryView view = RegistryView.Registry64,
-            Func<string, bool> filter = null, EnumerateOptions options = null)
-        {
-            Path = path ?? throw new ArgumentNullException(nameof(path));
-            Title = title;
-            Hive = hive;
-            View = view;
-            Filter = filter;
-            Options = options ?? new EnumerateOptions();
-        }
-    }
-
-    public class EnumerateOptions
-    {
-        public bool Recursive = false;
-        public int MaxDepth = -1;
-        public bool IncludeEmpty = true;
-    }
-
-    public class RegistryFolderInfo
-    {
-        public string Name;
-        public string FullPath;
-        public int Depth;
-        public int SubKeyCount;
-    }
-
+    // ==================== 数据结构 ====================
     public class RegistryEnumerateResult
     {
-        public List<RegistryFolderInfo> Folders = new List<RegistryFolderInfo>();
-        public int TotalCount;
-        public int FilteredCount;
-        public bool Success;
-        public string ErrorMessage;
-    }
-
-    // ==================== 过滤器 ====================
-    public static class RegistryFilters
-    {
-        public static Func<string, bool> StartsWith(string prefix)
-            => name => name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
-
-        public static Func<string, bool> EndsWith(string suffix)
-            => name => name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
-
-        public static Func<string, bool> Contains(string text)
-            => name => name.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0;
-
-        public static Func<string, bool> Regex(string pattern)
+        public class FolderInfo
         {
-            var regex = new System.Text.RegularExpressions.Regex(
-                pattern,
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            return name => regex.IsMatch(name);
+            public string Name { get; set; }
+            public string FullPath { get; set; }
+            public int Depth { get; set; }
+            public int SubKeyCount { get; set; }
         }
 
-        public static Func<string, bool> Exclude(params string[] excludeNames)
-        {
-            var set = new HashSet<string>(excludeNames, StringComparer.OrdinalIgnoreCase);
-            return name => !set.Contains(name);
-        }
-
-        public static Func<string, bool> Include(params string[] includeNames)
-        {
-            var set = new HashSet<string>(includeNames, StringComparer.OrdinalIgnoreCase);
-            return name => set.Contains(name);
-        }
-
-        public static Func<string, bool> IsGuid()
-            => name => Guid.TryParse(name, out _);
-
-        public static Func<string, bool> And(params Func<string, bool>[] filters)
-            => name => filters.All(f => f(name));
-
-        public static Func<string, bool> Or(params Func<string, bool>[] filters)
-            => name => filters.Any(f => f(name));
-
-        public static Func<string, bool> Not(Func<string, bool> filter)
-            => name => !filter(name);
-    }
-
-    // ==================== 读取工具类 ====================
-    public class RegistryReaderUtil
-    {
-        public static bool ReadMultipleRegistriesToFile(RegistryReadConfig[] configs)
-        {
-            try
-            {
-                var filePath = RegistryConfig.GetExportPath("registry_export");
-                var sb = new StringBuilder();
-                sb.AppendLine($"Registry Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-                sb.AppendLine();
-
-                foreach (var config in configs)
-                {
-                    AppendRegistryConfig(sb, config);
-                }
-
-                EnsureDirectoryExists(filePath);
-                File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                RegistryConfig.LogError("批量读取注册表失败", ex);
-                return false;
-            }
-        }
-
-        private static void AppendRegistryConfig(StringBuilder sb, RegistryReadConfig config)
-        {
-            try
-            {
-                using (var baseKey = RegistryKey.OpenBaseKey(config.Hive, config.View))
-                using (var key = baseKey.OpenSubKey(config.Path))
-                {
-                    if (key == null)
-                    {
-                        sb.AppendLine($"[FAILED] {config.Title ?? config.Path}");
-                        sb.AppendLine($"Reason: Key not found - {config.Path}");
-                        sb.AppendLine();
-                        return;
-                    }
-
-                    sb.AppendLine($"===== {config.Title ?? config.Path} =====");
-                    sb.AppendLine();
-
-                    foreach (var name in config.ValueNames)
-                    {
-                        var value = key.GetValue(name);
-                        sb.AppendLine($"{name} = {value ?? "NULL"}");
-                    }
-
-                    sb.AppendLine();
-                }
-            }
-            catch (Exception ex)
-            {
-                sb.AppendLine($"[ERROR] {config.Title ?? config.Path}");
-                sb.AppendLine($"Reason: {ex.Message}");
-                sb.AppendLine();
-            }
-        }
-
-        /// <summary>
-        /// 确保文件所在目录存在.
-        /// </summary>
-        private static void EnsureDirectoryExists(string filePath)
-        {
-            var directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-        }
+        public List<FolderInfo> Folders { get; set; } = new List<FolderInfo>();
+        public int TotalCount { get; set; }
+        public int FilteredCount { get; set; }
+        public bool Success { get; set; }
+        public string ErrorMessage { get; set; }
     }
 
     // ==================== 枚举工具类 ====================
+
     public class RegistryEnumerator
     {
         /// <summary>
         /// 枚举注册表子项.
         /// </summary>
-        /// <returns></returns>
-        public static RegistryEnumerateResult Enumerate(RegistryEnumerateConfig config)
+        public static RegistryEnumerateResult Enumerate(
+            string path,
+            RegistryHive hive = RegistryHive.LocalMachine,
+            RegistryView view = RegistryView.Registry64,
+            Func<string, bool> filter = null,
+            bool recursive = false,
+            int maxDepth = -1,
+            bool includeEmpty = true)
         {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
             var result = new RegistryEnumerateResult { Success = true };
 
             try
             {
-                using (var baseKey = RegistryKey.OpenBaseKey(config.Hive, config.View))
-                using (var key = baseKey.OpenSubKey(config.Path))
+                using (var baseKey = RegistryKey.OpenBaseKey(hive, view))
+                using (var key = baseKey.OpenSubKey(path))
                 {
                     if (key == null)
                     {
                         result.Success = false;
-                        result.ErrorMessage = $"无法打开注册表路径: {config.Path}";
+                        result.ErrorMessage = $"无法打开注册表路径: {path}";
                         return result;
                     }
 
-                    EnumerateRecursive(key, config, result, 0, config.Path);
+                    EnumerateRecursive(key, filter, recursive, maxDepth, includeEmpty, result, 0, path);
                 }
 
                 result.FilteredCount = result.Folders.Count;
@@ -280,12 +77,15 @@ namespace Cyclophiops.Regedit
 
         private static void EnumerateRecursive(
             RegistryKey key,
-            RegistryEnumerateConfig config,
+            Func<string, bool> filter,
+            bool recursive,
+            int maxDepth,
+            bool includeEmpty,
             RegistryEnumerateResult result,
             int depth,
             string currentPath)
         {
-            if (config.Options.MaxDepth >= 0 && depth > config.Options.MaxDepth)
+            if (maxDepth >= 0 && depth > maxDepth)
             {
                 return;
             }
@@ -297,12 +97,12 @@ namespace Cyclophiops.Regedit
 
                 foreach (var subKeyName in subKeyNames)
                 {
-                    if (!ShouldIncludeKey(config, subKeyName))
+                    if (filter != null && !filter(subKeyName))
                     {
                         continue;
                     }
 
-                    ProcessSubKey(key, subKeyName, config, result, depth, currentPath);
+                    ProcessSubKey(key, subKeyName, filter, recursive, maxDepth, includeEmpty, result, depth, currentPath);
                 }
             }
             catch (SecurityException)
@@ -311,15 +111,13 @@ namespace Cyclophiops.Regedit
             }
         }
 
-        private static bool ShouldIncludeKey(RegistryEnumerateConfig config, string keyName)
-        {
-            return config.Filter == null || config.Filter(keyName);
-        }
-
         private static void ProcessSubKey(
             RegistryKey parentKey,
             string subKeyName,
-            RegistryEnumerateConfig config,
+            Func<string, bool> filter,
+            bool recursive,
+            int maxDepth,
+            bool includeEmpty,
             RegistryEnumerateResult result,
             int depth,
             string currentPath)
@@ -337,12 +135,12 @@ namespace Cyclophiops.Regedit
 
                     var subKeyCount = subKey.GetSubKeyNames().Length;
 
-                    if (!config.Options.IncludeEmpty && subKeyCount == 0)
+                    if (!includeEmpty && subKeyCount == 0)
                     {
                         return;
                     }
 
-                    result.Folders.Add(new RegistryFolderInfo
+                    result.Folders.Add(new RegistryEnumerateResult.FolderInfo
                     {
                         Name = subKeyName,
                         FullPath = fullPath,
@@ -350,9 +148,9 @@ namespace Cyclophiops.Regedit
                         SubKeyCount = subKeyCount,
                     });
 
-                    if (config.Options.Recursive)
+                    if (recursive)
                     {
-                        EnumerateRecursive(subKey, config, result, depth + 1, fullPath);
+                        EnumerateRecursive(subKey, filter, recursive, maxDepth, includeEmpty, result, depth + 1, fullPath);
                     }
                 }
             }
@@ -381,7 +179,7 @@ namespace Cyclophiops.Regedit
             return sb.ToString();
         }
 
-        private static bool IsLastAtDepth(List<RegistryFolderInfo> folders, int currentIndex)
+        private static bool IsLastAtDepth(List<RegistryEnumerateResult.FolderInfo> folders, int currentIndex)
         {
             if (currentIndex >= folders.Count - 1)
             {
@@ -415,8 +213,8 @@ namespace Cyclophiops.Regedit
                 {
                     throw new ArgumentNullException(nameof(result));
                 }
-
-                var filePath = RegistryConfig.GetExportPath("registry_enumerate");
+                
+                var filePath = Path.Combine(OutputFile.EnsureOutputPath(), "registry_enumerate.txt");
                 var sb = new StringBuilder();
 
                 sb.AppendLine($"Registry Enumerate Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
@@ -425,14 +223,13 @@ namespace Cyclophiops.Regedit
                 sb.AppendLine();
                 sb.Append(ExportTree(result));
 
-                EnsureDirectoryExists(filePath);
                 File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
-                RegistryConfig.LogInfo($"注册表枚举已导出: {filePath}");
+                OutputFile.LogInfo($"注册表枚举已导出: {filePath}");
                 return true;
             }
             catch (Exception ex)
             {
-                RegistryConfig.LogError("导出注册表枚举失败", ex);
+                OutputFile.LogError("导出注册表枚举失败", " ", ex);
                 return false;
             }
         }

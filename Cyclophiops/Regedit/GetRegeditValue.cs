@@ -1,5 +1,5 @@
 using System;
-using System.Windows.Forms;
+using Cyclophiops.Export;
 
 namespace Cyclophiops.Regedit
 {
@@ -30,7 +30,7 @@ namespace Cyclophiops.Regedit
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"错误: {ex.Message}");
+                OutputFile.LogError("注册表获取发送异常", " ", ex);
             }
         }
     }
