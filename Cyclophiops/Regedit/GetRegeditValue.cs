@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Cyclophiops.Regedit;
+using System;
+using Cyclophiops.Export;
+using Cyclophiops.Regedit.Utils;
 
 namespace Cyclophiops.Regedit
 {
@@ -12,34 +8,30 @@ namespace Cyclophiops.Regedit
     {
         public static void Get()
         {
-            string logName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
+            _ = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
             try
             {
                 var configs = new[]
                 {
-                    new RegistryReadConfig(
+                    new ReadRegeditValue.Config(
                         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System",
                         new[] { "EnableLUA", "ConsentPromptBehaviorAdmin", "ConsentPromptBehaviorUser", "PromptOnSecureDesktop" },
-                        "UAC Settings"
-                    ),
-                    new RegistryReadConfig(
+                        "UAC Settings"),
+                    new ReadRegeditValue.Config(
                         @"SOFTWARE\Microsoft\Windows NT\CurrentVersion",
                         new[] { "ProductName", "CurrentBuild", "DisplayVersion", "RegisteredOwner", "ReleaseId", "BuildLabEx" },
-                        "Windows Version Info"
-                    ),
-                    new RegistryReadConfig(
+                        "Windows Version Info"),
+                    new ReadRegeditValue.Config(
                         @"SYSTEM\CurrentControlSet\Control\TimeZoneInformation",
                         new[] { "TimeZoneKeyName", "Bias" },
-                        "Time Zone Info"
-                    )
+                        "Time Zone Info"),
                 };
-                RegistryReaderUtil.ReadMultipleRegistriesToFile(
-                    configs
-                );
+                ReadRegeditValue.ReadMulRegeditToFile(
+                    configs);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"错误: {ex.Message}");
+                OutputFile.LogError("注册表获取发送异常", " ", ex);
             }
         }
     }
