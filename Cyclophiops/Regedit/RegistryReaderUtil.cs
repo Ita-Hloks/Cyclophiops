@@ -8,32 +8,13 @@ using Microsoft.Win32;
 
 namespace Cyclophiops.Regedit
 {
-    // ==================== 数据结构 ====================
-    public class RegistryEnumerateResult
-    {
-        public class FolderInfo
-        {
-            public string Name { get; set; }
-            public string FullPath { get; set; }
-            public int Depth { get; set; }
-            public int SubKeyCount { get; set; }
-        }
-
-        public List<FolderInfo> Folders { get; set; } = new List<FolderInfo>();
-        public int TotalCount { get; set; }
-        public int FilteredCount { get; set; }
-        public bool Success { get; set; }
-        public string ErrorMessage { get; set; }
-    }
-
-    // ==================== 枚举工具类 ====================
-
     public class RegistryEnumerator
     {
         /// <summary>
         /// 枚举注册表子项.
         /// </summary>
-        public static RegistryEnumerateResult Enumerate(
+        /// <returns></returns>
+        public static RegistryEnumerat.RegistryEnumerateResult Enumerate(
             string path,
             RegistryHive hive = RegistryHive.LocalMachine,
             RegistryView view = RegistryView.Registry64,
@@ -47,7 +28,7 @@ namespace Cyclophiops.Regedit
                 throw new ArgumentNullException(nameof(path));
             }
 
-            var result = new RegistryEnumerateResult { Success = true };
+            var result = new RegistryEnumerat.RegistryEnumerateResult { Success = true };
 
             try
             {
@@ -81,7 +62,7 @@ namespace Cyclophiops.Regedit
             bool recursive,
             int maxDepth,
             bool includeEmpty,
-            RegistryEnumerateResult result,
+            RegistryEnumerat.RegistryEnumerateResult result,
             int depth,
             string currentPath)
         {
@@ -118,7 +99,7 @@ namespace Cyclophiops.Regedit
             bool recursive,
             int maxDepth,
             bool includeEmpty,
-            RegistryEnumerateResult result,
+            RegistryEnumerat.RegistryEnumerateResult result,
             int depth,
             string currentPath)
         {
@@ -140,7 +121,7 @@ namespace Cyclophiops.Regedit
                         return;
                     }
 
-                    result.Folders.Add(new RegistryEnumerateResult.FolderInfo
+                    result.Folders.Add(new RegistryEnumerat.RegistryEnumerateResult.FolderInfo
                     {
                         Name = subKeyName,
                         FullPath = fullPath,
@@ -160,7 +141,7 @@ namespace Cyclophiops.Regedit
             }
         }
 
-        private static string ExportTree(RegistryEnumerateResult result)
+        private static string ExportTree(RegistryEnumerat.RegistryEnumerateResult result)
         {
             var sb = new StringBuilder();
 
@@ -179,7 +160,7 @@ namespace Cyclophiops.Regedit
             return sb.ToString();
         }
 
-        private static bool IsLastAtDepth(List<RegistryEnumerateResult.FolderInfo> folders, int currentIndex)
+        private static bool IsLastAtDepth(List<RegistryEnumerat.RegistryEnumerateResult.FolderInfo> folders, int currentIndex)
         {
             if (currentIndex >= folders.Count - 1)
             {
@@ -205,7 +186,7 @@ namespace Cyclophiops.Regedit
             return true;
         }
 
-        public static bool ExportToFile(RegistryEnumerateResult result)
+        public static bool ExportToFile(RegistryEnumerat.RegistryEnumerateResult result)
         {
             try
             {
@@ -213,8 +194,8 @@ namespace Cyclophiops.Regedit
                 {
                     throw new ArgumentNullException(nameof(result));
                 }
-                
-                var filePath = Path.Combine(OutputFile.EnsureOutputPath(), "registry_enumerate.txt");
+
+                var filePath = OutputFile.EnsureOutputPath("registry_enumerate.txt");
                 var sb = new StringBuilder();
 
                 sb.AppendLine($"Registry Enumerate Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
@@ -231,18 +212,6 @@ namespace Cyclophiops.Regedit
             {
                 OutputFile.LogError("导出注册表枚举失败", " ", ex);
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// 确保文件所在目录存在
-        /// </summary>
-        private static void EnsureDirectoryExists(string filePath)
-        {
-            var directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
             }
         }
     }

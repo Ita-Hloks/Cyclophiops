@@ -1,5 +1,6 @@
 using System;
 using Cyclophiops.Export;
+using Cyclophiops.Regedit.Utils;
 
 namespace Cyclophiops.Regedit
 {
@@ -12,20 +13,20 @@ namespace Cyclophiops.Regedit
             {
                 var configs = new[]
                 {
-                    new RegistryReadConfig(
+                    new ReadRegeditValue.Config(
                         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System",
                         new[] { "EnableLUA", "ConsentPromptBehaviorAdmin", "ConsentPromptBehaviorUser", "PromptOnSecureDesktop" },
                         "UAC Settings"),
-                    new RegistryReadConfig(
+                    new ReadRegeditValue.Config(
                         @"SOFTWARE\Microsoft\Windows NT\CurrentVersion",
                         new[] { "ProductName", "CurrentBuild", "DisplayVersion", "RegisteredOwner", "ReleaseId", "BuildLabEx" },
                         "Windows Version Info"),
-                    new RegistryReadConfig(
+                    new ReadRegeditValue.Config(
                         @"SYSTEM\CurrentControlSet\Control\TimeZoneInformation",
                         new[] { "TimeZoneKeyName", "Bias" },
                         "Time Zone Info"),
                 };
-                RegistryReaderUtil.ReadMultipleRegistriesToFile(
+                ReadRegeditValue.ReadMulRegeditToFile(
                     configs);
             }
             catch (Exception ex)
