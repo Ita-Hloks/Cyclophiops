@@ -3,39 +3,323 @@
 [*.cs]
 
 # ============================================
+# 基础格式设置
+# ============================================
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = LF
+
+# ============================================
 # Roslyn 规则配置
 # ============================================
 
 # 代码质量（CA 规则）
-dotnet_diagnostic.CA1001.severity = error  # 实现 IDisposable
-dotnet_diagnostic.CA1031.severity = warning # 不捕获一般异常
-dotnet_diagnostic.CA1062.severity = error  # 验证公共方法参数
-dotnet_diagnostic.CA2000.severity = error  # 释放对象
+dotnet_diagnostic.CA1001.severity = error    # 实现 IDisposable
+dotnet_diagnostic.CA1031.severity = warning  # 不捕获一般异常
+dotnet_diagnostic.CA1062.severity = error    # 验证公共方法参数
+dotnet_diagnostic.CA2000.severity = error    # 释放对象
+dotnet_diagnostic.CA1304.severity = warning  # 指定 CultureInfo
+dotnet_diagnostic.CA1305.severity = warning  # 指定 IFormatProvider
+dotnet_diagnostic.CA1806.severity = error    # 不要忽略方法结果
+dotnet_diagnostic.CA1820.severity = warning  # 使用长度检查而非空字符串
+dotnet_diagnostic.CA2007.severity = none     # ConfigureAwait (WinForms 不需要)
+dotnet_diagnostic.CA2201.severity = error    # 不要引发保留的异常类型
 
 # IDE 规则（代码风格）
-dotnet_diagnostic.IDE0005.severity = error  # 删除不必要的 using
-dotnet_diagnostic.IDE0055.severity = error  # 修复格式
+dotnet_diagnostic.IDE0005.severity = error   # 删除不必要的 using
+dotnet_diagnostic.IDE0055.severity = error   # 修复格式
+dotnet_diagnostic.IDE0001.severity = error   # 简化名称
+dotnet_diagnostic.IDE0002.severity = error   # 简化成员访问
+dotnet_diagnostic.IDE0003.severity = error   # 删除 this 或 Me 限定
+dotnet_diagnostic.IDE0004.severity = error   # 删除不必要的强制转换
+dotnet_diagnostic.IDE0051.severity = error   # 删除未使用的私有成员
+dotnet_diagnostic.IDE0052.severity = error   # 删除未读取的私有成员
+dotnet_diagnostic.IDE0058.severity = none    # 不强制使用表达式值（避免误报）
+dotnet_diagnostic.IDE0059.severity = warning # 删除不必要的赋值
+
+# var 使用规则
 csharp_style_var_for_built_in_types = true:error
+csharp_style_var_when_type_is_apparent = true:warning
+csharp_style_var_elsewhere = true:suggestion
+
+# using 位置
 csharp_using_directive_placement = outside_namespace:error
+
+# 大括号
 csharp_prefer_braces = true:error
+csharp_prefer_simple_using_statement = true:suggestion
+
+# 表达式偏好
+dotnet_style_prefer_auto_properties = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = false:none
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+
+# Null 检查
+csharp_style_throw_expression = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+dotnet_style_coalesce_expression = true:warning
+dotnet_style_null_propagation = true:warning
+
+# 模式匹配
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+csharp_style_prefer_pattern_matching = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
+
+# ============================================
+# 格式化规则
+# ============================================
+
+# 换行
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+# 缩进
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_indent_labels = no_change
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+
+# 空格
+csharp_space_after_cast = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+
+# 换行符
+csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_blocks = true
+
+# using 排序
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# ============================================
+# 命名规则
+# ============================================
+
+# 私有字段使用 _camelCase
+dotnet_naming_rule.private_fields_underscored.severity = error
+dotnet_naming_rule.private_fields_underscored.symbols = private_fields
+dotnet_naming_rule.private_fields_underscored.style = underscored_camel_case
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.underscored_camel_case.capitalization = camel_case
+dotnet_naming_style.underscored_camel_case.required_prefix = _
+
+# 常量使用 PascalCase
+dotnet_naming_rule.constants_pascal_case.severity = error
+dotnet_naming_rule.constants_pascal_case.symbols = constants
+dotnet_naming_rule.constants_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.required_modifiers = const
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# 公共成员使用 PascalCase
+dotnet_naming_rule.public_members_pascal_case.severity = error
+dotnet_naming_rule.public_members_pascal_case.symbols = public_symbols
+dotnet_naming_rule.public_members_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.public_symbols.applicable_kinds = property,method,field,event,delegate
+dotnet_naming_symbols.public_symbols.applicable_accessibilities = public,internal,protected,protected_internal
+
+# 异步方法使用 Async 后缀
+dotnet_naming_rule.async_methods_end_with_async.severity = warning
+dotnet_naming_rule.async_methods_end_with_async.symbols = async_methods
+dotnet_naming_rule.async_methods_end_with_async.style = async_suffix_style
+
+dotnet_naming_symbols.async_methods.applicable_kinds = method
+dotnet_naming_symbols.async_methods.required_modifiers = async
+
+dotnet_naming_style.async_suffix_style.capitalization = pascal_case
+dotnet_naming_style.async_suffix_style.required_suffix = Async
+
+# 接口使用 I 前缀
+dotnet_naming_rule.interfaces_start_with_i.severity = error
+dotnet_naming_rule.interfaces_start_with_i.symbols = interface_symbols
+dotnet_naming_rule.interfaces_start_with_i.style = interface_style
+
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+
+dotnet_naming_style.interface_style.capitalization = pascal_case
+dotnet_naming_style.interface_style.required_prefix = I
 
 # ============================================
 # StyleCop 规则配置
 # ============================================
 
-# 文档（通常设为 warning 或 none）
-dotnet_diagnostic.SA1600.severity = none   # 元素必须有文档
-dotnet_diagnostic.SA1633.severity = none   # 文件头
+# 文档规则
+dotnet_diagnostic.SA1600.severity = none     # 元素必须有文档
+dotnet_diagnostic.SA1601.severity = none     # 部分元素文档
+dotnet_diagnostic.SA1602.severity = none     # 枚举项文档
+dotnet_diagnostic.SA1629.severity = none     # 文档注释必须以句号结尾
+dotnet_diagnostic.SA1633.severity = none     # 文件头
+dotnet_diagnostic.SA1652.severity = none     # 启用 XML 文档输出
 
-# 命名（严格执行）
-dotnet_diagnostic.SA1309.severity = none   # 允许字段下划线前缀
-dotnet_diagnostic.SA1101.severity = none   # 不强制 this 前缀
+# 命名规则
+dotnet_diagnostic.SA1300.severity = error    # 元素必须以大写字母开头
+dotnet_diagnostic.SA1302.severity = error    # 接口名称必须以 I 开头
+dotnet_diagnostic.SA1303.severity = error    # 常量字段名必须以大写字母开头
+dotnet_diagnostic.SA1304.severity = error    # 非私有只读字段必须以大写字母开头
+dotnet_diagnostic.SA1306.severity = error    # 字段名必须以小写字母开头
+dotnet_diagnostic.SA1307.severity = error    # 可访问字段必须以大写字母开头
+dotnet_diagnostic.SA1308.severity = error    # 变量名不能以前缀开头
+dotnet_diagnostic.SA1309.severity = none     # 允许字段下划线前缀
+dotnet_diagnostic.SA1310.severity = error    # 字段名不能包含下划线
+dotnet_diagnostic.SA1311.severity = error    # 静态只读字段必须以大写字母开头
+dotnet_diagnostic.SA1312.severity = error    # 变量名必须以小写字母开头
+dotnet_diagnostic.SA1313.severity = error    # 参数名必须以小写字母开头
 
-# 布局（严格执行）
-dotnet_diagnostic.SA1200.severity = none   # 允许 using 在 namespace 外部
-dotnet_diagnostic.SA1400.severity = error  # 访问修饰符必须声明
-dotnet_diagnostic.SA1028.severity = error  # 代码不应包含尾随空格
+# 布局规则
+dotnet_diagnostic.SA1200.severity = none     # 允许 using 在 namespace 外部
+dotnet_diagnostic.SA1201.severity = warning  # 元素必须按正确顺序显示
+dotnet_diagnostic.SA1202.severity = warning  # 元素必须按访问级别排序
+dotnet_diagnostic.SA1203.severity = warning  # 常量必须出现在字段之前
+dotnet_diagnostic.SA1204.severity = warning  # 静态元素必须出现在实例元素之前
+dotnet_diagnostic.SA1208.severity = error    # System using 指令必须放在其他之前
+dotnet_diagnostic.SA1210.severity = error    # Using 指令必须按字母顺序排序
+dotnet_diagnostic.SA1211.severity = error    # Using 别名指令必须按字母顺序排序
+dotnet_diagnostic.SA1216.severity = error    # Using 静态指令必须放在正常 using 之后
+dotnet_diagnostic.SA1217.severity = error    # Using 静态指令必须按字母顺序排序
 
-# 可读性（严格执行）
-dotnet_diagnostic.SA1000.severity = error  # 关键字后必须有空格
-dotnet_diagnostic.SA1005.severity = error  # 单行注释格式
+# 可维护性
+dotnet_diagnostic.SA1119.severity = error    # 语句不应包含不必要的括号
+dotnet_diagnostic.SA1400.severity = error    # 访问修饰符必须声明
+dotnet_diagnostic.SA1401.severity = error    # 字段必须为私有
+dotnet_diagnostic.SA1402.severity = error    # 文件只能包含单个类型
+dotnet_diagnostic.SA1403.severity = error    # 文件只能包含单个命名空间
+dotnet_diagnostic.SA1404.severity = error    # 代码分析禁止显示必须有理由
+dotnet_diagnostic.SA1405.severity = error    # 调试断言必须提供消息文本
+dotnet_diagnostic.SA1406.severity = error    # 调试失败必须提供消息文本
+dotnet_diagnostic.SA1407.severity = error    # 算术表达式必须声明优先级
+dotnet_diagnostic.SA1408.severity = error    # 条件表达式必须声明优先级
+dotnet_diagnostic.SA1410.severity = error    # 删除委托创建中的冗余圆括号
+dotnet_diagnostic.SA1411.severity = error    # 特性构造函数不应使用不必要的圆括号
+
+# 可读性
+dotnet_diagnostic.SA1000.severity = error    # 关键字后必须有空格
+dotnet_diagnostic.SA1001.severity = error    # 逗号后必须有空格
+dotnet_diagnostic.SA1002.severity = error    # 分号后必须有空格
+dotnet_diagnostic.SA1003.severity = error    # 符号后不应有空格
+dotnet_diagnostic.SA1004.severity = error    # 文档行必须以单个空格开头
+dotnet_diagnostic.SA1005.severity = error    # 单行注释格式
+dotnet_diagnostic.SA1008.severity = error    # 左括号前不应有空格
+dotnet_diagnostic.SA1009.severity = error    # 右括号后不应有空格
+dotnet_diagnostic.SA1010.severity = error    # 左方括号后不应有空格
+dotnet_diagnostic.SA1011.severity = error    # 右方括号前不应有空格
+dotnet_diagnostic.SA1012.severity = error    # 左大括号后必须有空格
+dotnet_diagnostic.SA1013.severity = error    # 右大括号前必须有空格
+dotnet_diagnostic.SA1028.severity = error    # 代码不应包含尾随空格
+
+dotnet_diagnostic.SA1101.severity = none     # 不强制 this 前缀
+dotnet_diagnostic.SA1106.severity = error    # 代码不应包含空语句
+dotnet_diagnostic.SA1107.severity = error    # 代码不应包含多条语句
+dotnet_diagnostic.SA1108.severity = error    # 块语句不应包含嵌入注释
+dotnet_diagnostic.SA1110.severity = error    # 左括号或括号不应在行尾
+dotnet_diagnostic.SA1111.severity = error    # 右括号或括号不应在行首
+dotnet_diagnostic.SA1116.severity = none     # 拆分参数必须从新行开始（WinForms 可能太严格）
+dotnet_diagnostic.SA1117.severity = none     # 参数必须在同一行或单独的行上
+dotnet_diagnostic.SA1118.severity = warning  # 参数不应跨越多行
+dotnet_diagnostic.SA1120.severity = error    # 注释必须包含文本
+dotnet_diagnostic.SA1121.severity = error    # 使用内置类型别名
+dotnet_diagnostic.SA1122.severity = error    # 使用 string.Empty 而不是 ""
+dotnet_diagnostic.SA1123.severity = error    # 不要在区域内放置区域
+dotnet_diagnostic.SA1124.severity = error    # 不要使用区域
+dotnet_diagnostic.SA1125.severity = error    # 不要使用 true 或 false 比较
+
+# 间距规则
+dotnet_diagnostic.SA1500.severity = error    # 大括号不应共享行
+dotnet_diagnostic.SA1501.severity = error    # 语句不应在单行上
+dotnet_diagnostic.SA1502.severity = error    # 元素不应在单行上
+dotnet_diagnostic.SA1503.severity = error    # 大括号不应省略
+dotnet_diagnostic.SA1504.severity = error    # 所有访问器必须为单行或多行
+dotnet_diagnostic.SA1505.severity = error    # 左大括号不应后跟空行
+dotnet_diagnostic.SA1506.severity = error    # 元素文档头不应后跟空行
+dotnet_diagnostic.SA1507.severity = error    # 代码不应包含多个连续空行
+dotnet_diagnostic.SA1508.severity = error    # 右大括号不应前跟空行
+dotnet_diagnostic.SA1509.severity = error    # 左大括号不应前跟空行
+dotnet_diagnostic.SA1510.severity = error    # else 语句前不应有空行
+dotnet_diagnostic.SA1511.severity = error    # while 不应前跟空行
+dotnet_diagnostic.SA1512.severity = none     # 单行注释不应前跟空行
+dotnet_diagnostic.SA1513.severity = error    # 右大括号后必须有空行
+dotnet_diagnostic.SA1514.severity = error    # 元素文档头前必须有空行
+dotnet_diagnostic.SA1515.severity = error    # 单行注释后必须有空行
+dotnet_diagnostic.SA1516.severity = warning  # 元素之间必须用空行分隔
+dotnet_diagnostic.SA1517.severity = error    # 代码不应包含空行
+dotnet_diagnostic.SA1518.severity = error    # 文件末尾不应有空行
+
+# ============================================
+# 其他推荐规则
+# ============================================
+
+# 性能规则
+dotnet_diagnostic.CA1805.severity = warning  # 不要进行不必要的初始化
+dotnet_diagnostic.CA1810.severity = warning  # 内联初始化静态字段
+dotnet_diagnostic.CA1812.severity = warning  # 避免未实例化的内部类
+dotnet_diagnostic.CA1813.severity = none     # 避免未密封的特性
+dotnet_diagnostic.CA1814.severity = warning  # 优先选择交错数组而非多维数组
+dotnet_diagnostic.CA1815.severity = warning  # 重写值类型的 Equals 和相等运算符
+dotnet_diagnostic.CA1819.severity = none     # 属性不应返回数组
+dotnet_diagnostic.CA1821.severity = error    # 删除空终结器
+dotnet_diagnostic.CA1822.severity = suggestion # 成员可标记为 static
+dotnet_diagnostic.CA1823.severity = error    # 避免未使用的私有字段
+dotnet_diagnostic.CA1824.severity = warning  # 用 AssemblyVersionAttribute 标记程序集
+dotnet_diagnostic.CA1825.severity = error    # 避免长度为零的数组分配
+
+# 设计规则
+dotnet_diagnostic.CA1008.severity = warning  # 枚举应具有零值
+dotnet_diagnostic.CA1012.severity = warning  # 抽象类不应具有构造函数
+dotnet_diagnostic.CA1014.severity = none     # CLSCompliantAttribute 标记程序集
+dotnet_diagnostic.CA1016.severity = none     # AssemblyVersionAttribute 标记程序集
+dotnet_diagnostic.CA1017.severity = none     # ComVisibleAttribute 标记程序集
+dotnet_diagnostic.CA1018.severity = warning  # AttributeUsageAttribute 标记特性
+dotnet_diagnostic.CA1019.severity = warning  # 定义特性参数的访问器
+dotnet_diagnostic.CA1024.severity = none     # 适当使用属性
+dotnet_diagnostic.CA1027.severity = none     # FlagsAttribute 标记枚举
+dotnet_diagnostic.CA1028.severity = warning  # 枚举存储应为 Int32
+dotnet_diagnostic.CA1030.severity = none     # 适当使用事件
+dotnet_diagnostic.CA1032.severity = warning  # 实现标准异常构造函数
+dotnet_diagnostic.CA1033.severity = none     # 接口方法应可由子类型调用
+dotnet_diagnostic.CA1034.severity = warning  # 嵌套类型不应是可见的
+dotnet_diagnostic.CA1036.severity = warning  # 重写可比较类型的方法
+dotnet_diagnostic.CA1040.severity = warning  # 避免空接口
+dotnet_diagnostic.CA1041.severity = error    # 提供 ObsoleteAttribute 消息
+dotnet_diagnostic.CA1043.severity = warning  # 将整型或字符串参数用于索引器
+dotnet_diagnostic.CA1044.severity = none     # 属性不应是只写的
+dotnet_diagnostic.CA1045.severity = none     # 不要通过引用传递类型
+dotnet_diagnostic.CA1046.severity = none     # 不要在引用类型上重载相等运算符
+dotnet_diagnostic.CA1047.severity = warning  # 不要在密封类型中声明受保护成员
+dotnet_diagnostic.CA1050.severity = warning  # 在命名空间中声明类型
+dotnet_diagnostic.CA1051.severity = error    # 不要声明可见实例字段
+dotnet_diagnostic.CA1052.severity = error    # 静态容器类型应为 Static 或 NotInheritable
+dotnet_diagnostic.CA1054.severity = none     # URI 参数不应为字符串
+dotnet_diagnostic.CA1055.severity = none     # URI 返回值不应为字符串
+dotnet_diagnostic.CA1056.severity = none     # URI 属性不应为字符串
+dotnet_diagnostic.CA1058.severity = warning  # 类型不应扩展某些基类型
+dotnet_diagnostic.CA1060.severity = warning  # 将 P/Invoke 移到本机方法类
+dotnet_diagnostic.CA1061.severity = warning  # 不要隐藏基类方法
+dotnet_diagnostic.CA1063.severity = error    # 正确实现 IDisposable
+dotnet_diagnostic.CA1064.severity = warning  # 异常应该是公共的
+dotnet_diagnostic.CA1065.severity = warning  # 不要在意外的位置引发异常

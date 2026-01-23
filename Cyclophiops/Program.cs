@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace Cyclophiops
@@ -6,7 +6,7 @@ namespace Cyclophiops
     internal static class Program
     {
         /// <summary>
-        /// 应用程序的主入口点。.
+        /// 应用程序的主入口点。
         /// </summary>
         [STAThread]
         public static void Main()

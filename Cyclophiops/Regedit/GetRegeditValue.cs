@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace Cyclophiops.Regedit
@@ -7,7 +7,7 @@ namespace Cyclophiops.Regedit
     {
         public static void Get()
         {
-            var logName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
+            _ = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
             try
             {
                 var configs = new[]

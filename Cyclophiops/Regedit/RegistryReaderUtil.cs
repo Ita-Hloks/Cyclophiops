@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -438,7 +438,7 @@ namespace Cyclophiops.Regedit
         }
 
         /// <summary>
-        /// 确保文件所在目录存在.
+        /// 确保文件所在目录存在
         /// </summary>
         private static void EnsureDirectoryExists(string filePath)
         {
