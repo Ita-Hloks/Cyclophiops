@@ -1,0 +1,41 @@
+﻿root = true
+
+[*.cs]
+
+# ============================================
+# Roslyn 规则配置
+# ============================================
+
+# 代码质量（CA 规则）
+dotnet_diagnostic.CA1001.severity = error  # 实现 IDisposable
+dotnet_diagnostic.CA1031.severity = warning # 不捕获一般异常
+dotnet_diagnostic.CA1062.severity = error  # 验证公共方法参数
+dotnet_diagnostic.CA2000.severity = error  # 释放对象
+
+# IDE 规则（代码风格）
+dotnet_diagnostic.IDE0005.severity = error  # 删除不必要的 using
+dotnet_diagnostic.IDE0055.severity = error  # 修复格式
+csharp_style_var_for_built_in_types = true:error
+csharp_using_directive_placement = outside_namespace:error
+csharp_prefer_braces = true:error
+
+# ============================================
+# StyleCop 规则配置
+# ============================================
+
+# 文档（通常设为 warning 或 none）
+dotnet_diagnostic.SA1600.severity = none   # 元素必须有文档
+dotnet_diagnostic.SA1633.severity = none   # 文件头
+
+# 命名（严格执行）
+dotnet_diagnostic.SA1309.severity = none   # 允许字段下划线前缀
+dotnet_diagnostic.SA1101.severity = none   # 不强制 this 前缀
+
+# 布局（严格执行）
+dotnet_diagnostic.SA1200.severity = none   # 允许 using 在 namespace 外部
+dotnet_diagnostic.SA1400.severity = error  # 访问修饰符必须声明
+dotnet_diagnostic.SA1028.severity = error  # 代码不应包含尾随空格
+
+# 可读性（严格执行）
+dotnet_diagnostic.SA1000.severity = error  # 关键字后必须有空格
+dotnet_diagnostic.SA1005.severity = error  # 单行注释格式

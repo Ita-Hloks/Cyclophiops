@@ -1,15 +1,14 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
 using System.Text;
+using Microsoft.Win32;
 
 namespace Cyclophiops.Regedit
 {
     // ==================== 全局配置 ====================
-
     public static class RegistryConfig
     {
         private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log");
@@ -18,7 +17,9 @@ namespace Cyclophiops.Regedit
         private static void EnsureLogDirectoryExists()
         {
             if (!Directory.Exists(LogDirectory))
+            {
                 Directory.CreateDirectory(LogDirectory);
+            }
         }
 
         private static void WriteLog(string level, string message, Exception ex = null)
@@ -29,14 +30,20 @@ namespace Cyclophiops.Regedit
                 var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 var log = $"[{timestamp}] |{level}| {message}";
                 if (ex != null)
+                {
                     log += $"\n{ex}";
+                }
+
                 log += "\n";
                 File.AppendAllText(LogFile, log, Encoding.UTF8);
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public static void LogInfo(string message) => WriteLog("INFO", message);
+
         public static void LogError(string message, Exception ex = null) => WriteLog("ERROR", message, ex);
 
         internal static string GetExportPath(string baseName)
@@ -48,7 +55,6 @@ namespace Cyclophiops.Regedit
     }
 
     // ==================== 配置类 ====================
-
     public class RegistryReadConfig
     {
         public readonly string Path;
@@ -57,7 +63,7 @@ namespace Cyclophiops.Regedit
         public readonly RegistryHive Hive;
         public readonly RegistryView View;
 
-        public RegistryReadConfig(string path, string[] valueNames, string title = null, 
+        public RegistryReadConfig(string path, string[] valueNames, string title = null,
             RegistryHive hive = RegistryHive.LocalMachine, RegistryView view = RegistryView.Registry64)
         {
             Path = path;
@@ -77,7 +83,7 @@ namespace Cyclophiops.Regedit
         public readonly Func<string, bool> Filter;
         public readonly EnumerateOptions Options;
 
-        public RegistryEnumerateConfig(string path, string title = null, 
+        public RegistryEnumerateConfig(string path, string title = null,
             RegistryHive hive = RegistryHive.LocalMachine, RegistryView view = RegistryView.Registry64,
             Func<string, bool> filter = null, EnumerateOptions options = null)
         {
@@ -115,7 +121,6 @@ namespace Cyclophiops.Regedit
     }
 
     // ==================== 过滤器 ====================
-
     public static class RegistryFilters
     {
         public static Func<string, bool> StartsWith(string prefix)
@@ -129,7 +134,8 @@ namespace Cyclophiops.Regedit
 
         public static Func<string, bool> Regex(string pattern)
         {
-            var regex = new System.Text.RegularExpressions.Regex(pattern,
+            var regex = new System.Text.RegularExpressions.Regex(
+                pattern,
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             return name => regex.IsMatch(name);
         }
@@ -160,7 +166,6 @@ namespace Cyclophiops.Regedit
     }
 
     // ==================== 读取工具类 ====================
-
     public class RegistryReaderUtil
     {
         public static bool ReadMultipleRegistriesToFile(RegistryReadConfig[] configs)
@@ -173,7 +178,9 @@ namespace Cyclophiops.Regedit
                 sb.AppendLine();
 
                 foreach (var config in configs)
+                {
                     AppendRegistryConfig(sb, config);
+                }
 
                 EnsureDirectoryExists(filePath);
                 File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
@@ -206,7 +213,7 @@ namespace Cyclophiops.Regedit
 
                     foreach (var name in config.ValueNames)
                     {
-                        object value = key.GetValue(name);
+                        var value = key.GetValue(name);
                         sb.AppendLine($"{name} = {value ?? "NULL"}");
                     }
 
@@ -222,7 +229,7 @@ namespace Cyclophiops.Regedit
         }
 
         /// <summary>
-        /// 确保文件所在目录存在
+        /// 确保文件所在目录存在.
         /// </summary>
         private static void EnsureDirectoryExists(string filePath)
         {
@@ -235,12 +242,12 @@ namespace Cyclophiops.Regedit
     }
 
     // ==================== 枚举工具类 ====================
-
     public class RegistryEnumerator
     {
         /// <summary>
-        /// 枚举注册表子项
+        /// 枚举注册表子项.
         /// </summary>
+        /// <returns></returns>
         public static RegistryEnumerateResult Enumerate(RegistryEnumerateConfig config)
         {
             var result = new RegistryEnumerateResult { Success = true };
@@ -259,6 +266,7 @@ namespace Cyclophiops.Regedit
 
                     EnumerateRecursive(key, config, result, 0, config.Path);
                 }
+
                 result.FilteredCount = result.Folders.Count;
             }
             catch (Exception ex)
@@ -278,7 +286,9 @@ namespace Cyclophiops.Regedit
             string currentPath)
         {
             if (config.Options.MaxDepth >= 0 && depth > config.Options.MaxDepth)
+            {
                 return;
+            }
 
             try
             {
@@ -288,7 +298,9 @@ namespace Cyclophiops.Regedit
                 foreach (var subKeyName in subKeyNames)
                 {
                     if (!ShouldIncludeKey(config, subKeyName))
+                    {
                         continue;
+                    }
 
                     ProcessSubKey(key, subKeyName, config, result, depth, currentPath);
                 }
@@ -319,19 +331,23 @@ namespace Cyclophiops.Regedit
                 using (var subKey = parentKey.OpenSubKey(subKeyName))
                 {
                     if (subKey == null)
+                    {
                         return;
+                    }
 
                     var subKeyCount = subKey.GetSubKeyNames().Length;
 
                     if (!config.Options.IncludeEmpty && subKeyCount == 0)
+                    {
                         return;
+                    }
 
                     result.Folders.Add(new RegistryFolderInfo
                     {
                         Name = subKeyName,
                         FullPath = fullPath,
                         Depth = depth,
-                        SubKeyCount = subKeyCount
+                        SubKeyCount = subKeyCount,
                     });
 
                     if (config.Options.Recursive)
@@ -350,13 +366,13 @@ namespace Cyclophiops.Regedit
         {
             var sb = new StringBuilder();
 
-            for (int i = 0; i < result.Folders.Count; i++)
+            for (var i = 0; i < result.Folders.Count; i++)
             {
                 var folder = result.Folders[i];
                 var indent = new string(' ', folder.Depth * 4);
 
                 // 判断是否是最后一个同深度的项
-                bool isLast = IsLastAtDepth(result.Folders, i);
+                var isLast = IsLastAtDepth(result.Folders, i);
 
                 var prefix = isLast ? "└─ " : "├─ ";
                 sb.AppendLine($"{indent}{prefix}{folder.Name}");
@@ -368,17 +384,24 @@ namespace Cyclophiops.Regedit
         private static bool IsLastAtDepth(List<RegistryFolderInfo> folders, int currentIndex)
         {
             if (currentIndex >= folders.Count - 1)
+            {
                 return true;
+            }
 
             var currentDepth = folders[currentIndex].Depth;
 
             // 检查后续项是否有相同深度的
-            for (int i = currentIndex + 1; i < folders.Count; i++)
+            for (var i = currentIndex + 1; i < folders.Count; i++)
             {
                 if (folders[i].Depth < currentDepth)
+                {
                     return true;
+                }
+
                 if (folders[i].Depth == currentDepth)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -389,11 +412,13 @@ namespace Cyclophiops.Regedit
             try
             {
                 if (result == null)
+                {
                     throw new ArgumentNullException(nameof(result));
+                }
 
                 var filePath = RegistryConfig.GetExportPath("registry_enumerate");
                 var sb = new StringBuilder();
-                
+
                 sb.AppendLine($"Registry Enumerate Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 sb.AppendLine($"Total: {result.TotalCount}, Filtered: {result.FilteredCount}");
                 sb.AppendLine(new string('=', 60));
@@ -413,7 +438,7 @@ namespace Cyclophiops.Regedit
         }
 
         /// <summary>
-        /// 确保文件所在目录存在
+        /// 确保文件所在目录存在.
         /// </summary>
         private static void EnsureDirectoryExists(string filePath)
         {

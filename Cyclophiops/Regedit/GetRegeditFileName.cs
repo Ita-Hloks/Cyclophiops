@@ -1,6 +1,5 @@
-﻿using Microsoft.Win32;
-using System;
-using Cyclophiops.Regedit;
+﻿using System;
+using Microsoft.Win32;
 
 namespace Cyclophiops.Regedit
 {
@@ -11,13 +10,12 @@ namespace Cyclophiops.Regedit
             try
             {
                 var config = new RegistryEnumerateConfig(
-                    @"",
+                    string.Empty,
                     "USERS 注册表树",
                     RegistryHive.Users,
                     RegistryView.Registry64,
                     null,
-                    new EnumerateOptions { Recursive = true, MaxDepth = 3 }
-                );
+                    new EnumerateOptions { Recursive = true, MaxDepth = 3 });
 
                 RegistryConfig.LogInfo("开始枚举注册表...");
                 var result = RegistryEnumerator.Enumerate(config);
@@ -43,12 +41,16 @@ namespace Cyclophiops.Regedit
                 }
 
                 RegistryConfig.LogInfo("开始导出到文件...");
-                bool exportResult = RegistryEnumerator.ExportToFile(result);
+                var exportResult = RegistryEnumerator.ExportToFile(result);
 
                 if (exportResult)
+                {
                     RegistryConfig.LogInfo("导出成功");
+                }
                 else
+                {
                     RegistryConfig.LogError("导出失败");
+                }
 
                 return exportResult;
             }
