@@ -35,7 +35,7 @@ namespace Cyclophiops.Regedit.Utils
         {
             try
             {
-                var filePath = OutputFile.EnsureOutputPath($"{DateTime.Now:yyyy-MM-dd HHmmss}registry_export.txt");
+                var filePath = OutputFile.EnsureOutputPath($"D:/log/{DateTime.Now:yyyy-MM-dd_HHmmss}_registry_export.txt");
                 var sb = new StringBuilder();
                 sb.AppendLine($"Registry Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 sb.AppendLine();

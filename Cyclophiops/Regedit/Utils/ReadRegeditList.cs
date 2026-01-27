@@ -38,6 +38,17 @@ namespace Cyclophiops.Regedit.Utils
             string path,
             RegistryHive hive = RegistryHive.LocalMachine,
             RegistryView view = RegistryView.Registry64,
+            RegistryFilter filter = null,
+            int maxDepth = -1,
+            bool includeEmpty = true)
+        {
+            return EnumerateInternal(path, hive, view, filter?.GetFilterFunc(), maxDepth, includeEmpty);
+        }
+
+        private static EnumerateResult EnumerateInternal(
+            string path,
+            RegistryHive hive = RegistryHive.LocalMachine,
+            RegistryView view = RegistryView.Registry64,
             Func<string, bool> filter = null,
             int maxDepth = -1,
             bool includeEmpty = true)
@@ -84,7 +95,7 @@ namespace Cyclophiops.Regedit.Utils
                     throw new ArgumentNullException(nameof(result));
                 }
 
-                var filePath = OutputFile.EnsureOutputPath("registry_enumerate.txt");
+                var filePath = OutputFile.EnsureOutputPath($"D:/log/{DateTime.Now:yyyy-MM-dd_HHmmss}registry_enumerate.txt");
                 var sb = new StringBuilder();
 
                 sb.AppendLine($"Registry Enumerate Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");

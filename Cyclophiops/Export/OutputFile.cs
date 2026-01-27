@@ -16,7 +16,7 @@ namespace Cyclophiops.Export
                     .Select(_ => (char)random.Next('a', 'z' + 1))
                     .ToArray());
 
-                path = $"{DateTime.Now:yyyy-MM-dd_HHmmss}_{randomString}.txt";
+                path = $"D:/log/{DateTime.Now:yyyy-MM-dd_HHmmss}_log.txt";
             }
 
             // 相对路径转绝对路径
