@@ -6,20 +6,39 @@ using System.Text;
 using Cyclophiops.Export;
 using Microsoft.Win32;
 
-namespace Cyclophiops.Regedit
+namespace Cyclophiops.Regedit.Utils
 {
-    public class RegistryEnumerator
+    public class ReadRegeditList
     {
-        /// <summary>
-        /// 枚举注册表子项.
-        /// </summary>
-        /// <returns></returns>
-        public static RegistryEnumerat.RegistryEnumerateResult Enumerate(
+        public class EnumerateResult
+        {
+            public class FolderInfo
+            {
+                public string Name { get; set; }
+
+                public string FullPath { get; set; }
+
+                public int Depth { get; set; }
+
+                public int SubKeyCount { get; set; }
+            }
+
+            public List<FolderInfo> Folders { get; set; } = new List<FolderInfo>();
+
+            public int TotalCount { get; set; }
+
+            public int FilteredCount { get; set; }
+
+            public bool Success { get; set; }
+
+            public string ErrorMessage { get; set; }
+        }
+
+        public static EnumerateResult Enumerate(
             string path,
             RegistryHive hive = RegistryHive.LocalMachine,
             RegistryView view = RegistryView.Registry64,
             Func<string, bool> filter = null,
-            bool recursive = false,
             int maxDepth = -1,
             bool includeEmpty = true)
         {
@@ -28,7 +47,7 @@ namespace Cyclophiops.Regedit
                 throw new ArgumentNullException(nameof(path));
             }
 
-            var result = new RegistryEnumerat.RegistryEnumerateResult { Success = true };
+            var result = new EnumerateResult { Success = true };
 
             try
             {
@@ -42,7 +61,7 @@ namespace Cyclophiops.Regedit
                         return result;
                     }
 
-                    EnumerateRecursive(key, filter, recursive, maxDepth, includeEmpty, result, 0, path);
+                    EnumerateRecursive(key, filter, maxDepth, includeEmpty, result, 0, path);
                 }
 
                 result.FilteredCount = result.Folders.Count;
@@ -56,137 +75,7 @@ namespace Cyclophiops.Regedit
             return result;
         }
 
-        private static void EnumerateRecursive(
-            RegistryKey key,
-            Func<string, bool> filter,
-            bool recursive,
-            int maxDepth,
-            bool includeEmpty,
-            RegistryEnumerat.RegistryEnumerateResult result,
-            int depth,
-            string currentPath)
-        {
-            if (maxDepth >= 0 && depth > maxDepth)
-            {
-                return;
-            }
-
-            try
-            {
-                var subKeyNames = key.GetSubKeyNames();
-                result.TotalCount += subKeyNames.Length;
-
-                foreach (var subKeyName in subKeyNames)
-                {
-                    if (filter != null && !filter(subKeyName))
-                    {
-                        continue;
-                    }
-
-                    ProcessSubKey(key, subKeyName, filter, recursive, maxDepth, includeEmpty, result, depth, currentPath);
-                }
-            }
-            catch (SecurityException)
-            {
-                // 忽略无权限访问的项
-            }
-        }
-
-        private static void ProcessSubKey(
-            RegistryKey parentKey,
-            string subKeyName,
-            Func<string, bool> filter,
-            bool recursive,
-            int maxDepth,
-            bool includeEmpty,
-            RegistryEnumerat.RegistryEnumerateResult result,
-            int depth,
-            string currentPath)
-        {
-            var fullPath = currentPath + "\\" + subKeyName;
-
-            try
-            {
-                using (var subKey = parentKey.OpenSubKey(subKeyName))
-                {
-                    if (subKey == null)
-                    {
-                        return;
-                    }
-
-                    var subKeyCount = subKey.GetSubKeyNames().Length;
-
-                    if (!includeEmpty && subKeyCount == 0)
-                    {
-                        return;
-                    }
-
-                    result.Folders.Add(new RegistryEnumerat.RegistryEnumerateResult.FolderInfo
-                    {
-                        Name = subKeyName,
-                        FullPath = fullPath,
-                        Depth = depth,
-                        SubKeyCount = subKeyCount,
-                    });
-
-                    if (recursive)
-                    {
-                        EnumerateRecursive(subKey, filter, recursive, maxDepth, includeEmpty, result, depth + 1, fullPath);
-                    }
-                }
-            }
-            catch (SecurityException)
-            {
-                // 忽略无权限访问的项
-            }
-        }
-
-        private static string ExportTree(RegistryEnumerat.RegistryEnumerateResult result)
-        {
-            var sb = new StringBuilder();
-
-            for (var i = 0; i < result.Folders.Count; i++)
-            {
-                var folder = result.Folders[i];
-                var indent = new string(' ', folder.Depth * 4);
-
-                // 判断是否是最后一个同深度的项
-                var isLast = IsLastAtDepth(result.Folders, i);
-
-                var prefix = isLast ? "└─ " : "├─ ";
-                sb.AppendLine($"{indent}{prefix}{folder.Name}");
-            }
-
-            return sb.ToString();
-        }
-
-        private static bool IsLastAtDepth(List<RegistryEnumerat.RegistryEnumerateResult.FolderInfo> folders, int currentIndex)
-        {
-            if (currentIndex >= folders.Count - 1)
-            {
-                return true;
-            }
-
-            var currentDepth = folders[currentIndex].Depth;
-
-            // 检查后续项是否有相同深度的
-            for (var i = currentIndex + 1; i < folders.Count; i++)
-            {
-                if (folders[i].Depth < currentDepth)
-                {
-                    return true;
-                }
-
-                if (folders[i].Depth == currentDepth)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static bool ExportToFile(RegistryEnumerat.RegistryEnumerateResult result)
+        public static bool ExportToFile(EnumerateResult result)
         {
             try
             {
@@ -213,6 +102,131 @@ namespace Cyclophiops.Regedit
                 OutputFile.LogError("导出注册表枚举失败", " ", ex);
                 return false;
             }
+        }
+
+        private static void EnumerateRecursive(
+            RegistryKey key,
+            Func<string, bool> filter,
+            int maxDepth,
+            bool includeEmpty,
+            EnumerateResult result,
+            int depth,
+            string currentPath)
+        {
+            if (maxDepth >= 0 && depth > maxDepth)
+            {
+                return;
+            }
+
+            try
+            {
+                var subKeyNames = key.GetSubKeyNames();
+                result.TotalCount += subKeyNames.Length;
+
+                foreach (var subKeyName in subKeyNames)
+                {
+                    if (filter != null && !filter(subKeyName))
+                    {
+                        continue;
+                    }
+
+                    ProcessSubKey(key, subKeyName, filter, maxDepth, includeEmpty, result, depth, currentPath);
+                }
+            }
+            catch (SecurityException)
+            {
+                // 忽略无权限访问的项
+            }
+        }
+
+        private static void ProcessSubKey(
+            RegistryKey parentKey,
+            string subKeyName,
+            Func<string, bool> filter,
+            int maxDepth,
+            bool includeEmpty,
+            EnumerateResult result,
+            int depth,
+            string currentPath)
+        {
+            var fullPath = currentPath + "\\" + subKeyName;
+
+            try
+            {
+                using (var subKey = parentKey.OpenSubKey(subKeyName))
+                {
+                    if (subKey == null)
+                    {
+                        return;
+                    }
+
+                    var subKeyCount = subKey.GetSubKeyNames().Length;
+
+                    if (!includeEmpty && subKeyCount == 0)
+                    {
+                        return;
+                    }
+
+                    result.Folders.Add(new EnumerateResult.FolderInfo
+                    {
+                        Name = subKeyName,
+                        FullPath = fullPath,
+                        Depth = depth,
+                        SubKeyCount = subKeyCount,
+                    });
+
+                    EnumerateRecursive(subKey, filter, maxDepth, includeEmpty, result, depth + 1, fullPath);
+                }
+            }
+            catch (SecurityException)
+            {
+                // 忽略无权限访问的项
+            }
+        }
+
+        private static string ExportTree(EnumerateResult result)
+        {
+            var sb = new StringBuilder();
+
+            for (var i = 0; i < result.Folders.Count; i++)
+            {
+                var folder = result.Folders[i];
+                var indent = new string(' ', folder.Depth * 4);
+
+                // 判断是否是最后一个同深度的项
+                var isLast = IsLastAtDepth(result.Folders, i);
+
+                var prefix = isLast ? "└─ " : "├─ ";
+                sb.AppendLine($"{indent}{prefix}{folder.Name}");
+            }
+
+            return sb.ToString();
+        }
+
+        private static bool IsLastAtDepth(List<EnumerateResult.FolderInfo> folders, int currentIndex)
+        {
+            if (currentIndex >= folders.Count - 1)
+            {
+                return true;
+            }
+
+            var currentDepth = folders[currentIndex].Depth;
+
+            // 检查后续项是否有相同深度的
+            for (var i = currentIndex + 1; i < folders.Count; i++)
+            {
+                if (folders[i].Depth < currentDepth)
+                {
+                    return true;
+                }
+
+                if (folders[i].Depth == currentDepth)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

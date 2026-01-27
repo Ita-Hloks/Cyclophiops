@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path=".pre-commit-config.yaml" />
   </Folder>
   <Project Path="Cyclophiops/Cyclophiops.csproj" Id="bc8944cd-4668-4b5d-aaed-fc2345f00112" />
 </Solution>
