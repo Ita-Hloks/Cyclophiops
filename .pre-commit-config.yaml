@@ -1,0 +1,14 @@
+repos:
+  - repo: local
+    hooks:
+      - id: dotnet-format-verify
+        name: dotnet format (verify)
+        entry: dotnet format --verify-no-changes
+        language: system
+        pass_filenames: false
+
+      - id: prevent-main-commit
+        name: prevent commit to main/master
+        entry: powershell -NoProfile -ExecutionPolicy Bypass -Command "$b=(git branch --show-current).Trim(); if ($b -in @('main','master')) { Write-Host 'Direct commits to main/master are blocked. Use a feature branch + PR.'; exit 1 }"
+        language: system
+        pass_filenames: false

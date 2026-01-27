@@ -194,7 +194,7 @@ dotnet_diagnostic.SA1313.severity = error    # 参数名必须以小写字母开
 
 # 布局规则
 dotnet_diagnostic.SA1200.severity = none     # 允许 using 在 namespace 外部
-dotnet_diagnostic.SA1201.severity = warning  # 元素必须按正确顺序显示
+dotnet_diagnostic.SA1201.severity = suggestion  # 元素必须按正确顺序显示
 dotnet_diagnostic.SA1202.severity = warning  # 元素必须按访问级别排序
 dotnet_diagnostic.SA1203.severity = warning  # 常量必须出现在字段之前
 dotnet_diagnostic.SA1204.severity = warning  # 静态元素必须出现在实例元素之前
