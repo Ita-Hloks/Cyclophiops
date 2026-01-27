@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Cyclophiops.Export
@@ -9,13 +8,8 @@ namespace Cyclophiops.Export
     {
         public static string EnsureOutputPath(string path = "")
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(path) && path == " ")
             {
-                var random = new Random();
-                var randomString = new string(Enumerable.Range(0, 10)
-                    .Select(_ => (char)random.Next('a', 'z' + 1))
-                    .ToArray());
-
                 path = $"D:/log/{DateTime.Now:yyyy-MM-dd_HHmmss}_log.txt";
             }
 

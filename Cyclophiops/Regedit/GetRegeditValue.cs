@@ -6,9 +6,8 @@ namespace Cyclophiops.Regedit
 {
     internal class GetRegeditValue
     {
-        public static void Get()
+        public static bool Get()
         {
-            _ = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log";
             try
             {
                 var configs = new[]
@@ -32,7 +31,10 @@ namespace Cyclophiops.Regedit
             catch (Exception ex)
             {
                 OutputFile.LogError("注册表获取发送异常", " ", ex);
+                return false;
             }
+
+            return true;
         }
     }
 }

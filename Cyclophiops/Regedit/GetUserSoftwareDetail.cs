@@ -27,8 +27,8 @@ namespace Cyclophiops.Regedit
                         path: $"{sid}\\SOFTWARE",
                         hive: RegistryHive.Users,
                         view: RegistryView.Registry64,
-                        filter: null,
-                        maxDepth: 2);
+                        filter: RegistryFilter.CreateRegex(@"^(?!(Classes|CloudStore)).*", ignoreCase: true),
+                        maxDepth: 4);
 
                     if (result.Success && result.Folders.Count > 0)
                     {
