@@ -95,7 +95,7 @@ namespace Cyclophiops.Regedit.Utils
                     throw new ArgumentNullException(nameof(result));
                 }
 
-                var filePath = OutputFile.EnsureOutputPath($"D:/log/{DateTime.Now:yyyy-MM-dd_HHmmss}registry_enumerate.txt");
+                var filePath = OutputFile.EnsureOutputPath($"D:\\log\\{DateTime.Now:yyyy-MM-dd_HHmmss}_registry_enumerate.txt");
                 var sb = new StringBuilder();
 
                 sb.AppendLine($"Registry Enumerate Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");

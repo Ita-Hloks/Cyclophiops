@@ -35,7 +35,7 @@ namespace Cyclophiops.Regedit.Utils
         {
             try
             {
-                var filePath = OutputFile.EnsureOutputPath($"D:/log/{DateTime.Now:yyyy-MM-dd_HHmmss}_registry_export.txt");
+                var filePath = OutputFile.EnsureOutputPath($"D:\\log\\{DateTime.Now:yyyy-MM-dd_HHmmss}_registry_export.txt");
                 var sb = new StringBuilder();
                 sb.AppendLine($"Registry Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 sb.AppendLine();
@@ -45,8 +45,8 @@ namespace Cyclophiops.Regedit.Utils
                     AppendRegistryConfig(sb, config);
                 }
 
-                EnsureDirectoryExists(filePath);
                 File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+                OutputFile.LogInfo($"注册表导出成功: {filePath}");
                 return true;
             }
             catch (Exception ex)
@@ -88,15 +88,6 @@ namespace Cyclophiops.Regedit.Utils
                 sb.AppendLine($"[ERROR] {config.Title ?? config.Path}");
                 sb.AppendLine($"Reason: {ex.Message}");
                 sb.AppendLine();
-            }
-        }
-
-        private static void EnsureDirectoryExists(string filePath)
-        {
-            var directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
             }
         }
     }
