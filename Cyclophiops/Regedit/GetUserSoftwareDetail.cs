@@ -23,11 +23,13 @@ namespace Cyclophiops.Regedit
                 {
                     OutputFile.LogInfo($"正在处理 SID: {sid}");
 
+                    var filter = RegistryFilter.CreateRegex(RegistryFilter.Patterns.ExcludeItems("Classes", "CloudStore"), ignoreCase: true);
+
                     var result = ReadRegeditList.Enumerate(
                         path: $"{sid}\\SOFTWARE",
                         hive: RegistryHive.Users,
                         view: RegistryView.Registry64,
-                        filter: RegistryFilter.CreateRegex(@"^(?!(Classes|CloudStore)).*", ignoreCase: true),
+                        filter: filter,
                         maxDepth: 4);
 
                     if (result.Success && result.Folders.Count > 0)
