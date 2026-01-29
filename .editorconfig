@@ -174,6 +174,9 @@ dotnet_naming_style.interface_style.required_prefix = I
 dotnet_diagnostic.SA1600.severity = none     # 元素必须有文档
 dotnet_diagnostic.SA1601.severity = none     # 部分元素文档
 dotnet_diagnostic.SA1602.severity = none     # 枚举项文档
+dotnet_diagnostic.SA1611.severity = none     # 参数必须写 XML 文档注释
+dotnet_diagnostic.SA1615.severity = none     # 返回值必须写 XML 文档注释
+dotnet_diagnostic.SA1616.severity = none     # 返回值文档必须包含文本
 dotnet_diagnostic.SA1629.severity = none     # 文档注释必须以句号结尾
 dotnet_diagnostic.SA1633.severity = none     # 文件头
 dotnet_diagnostic.SA1652.severity = none     # 启用 XML 文档输出
@@ -195,9 +198,9 @@ dotnet_diagnostic.SA1313.severity = error    # 参数名必须以小写字母开
 # 布局规则
 dotnet_diagnostic.SA1200.severity = none     # 允许 using 在 namespace 外部
 dotnet_diagnostic.SA1201.severity = suggestion  # 元素必须按正确顺序显示
-dotnet_diagnostic.SA1202.severity = warning  # 元素必须按访问级别排序
-dotnet_diagnostic.SA1203.severity = warning  # 常量必须出现在字段之前
-dotnet_diagnostic.SA1204.severity = warning  # 静态元素必须出现在实例元素之前
+dotnet_diagnostic.SA1202.severity = suggestion  # 元素必须按访问级别排序
+dotnet_diagnostic.SA1203.severity = suggestion  # 常量必须出现在字段之前
+dotnet_diagnostic.SA1204.severity = suggestion  # 静态元素必须出现在实例元素之前
 dotnet_diagnostic.SA1208.severity = error    # System using 指令必须放在其他之前
 dotnet_diagnostic.SA1210.severity = error    # Using 指令必须按字母顺序排序
 dotnet_diagnostic.SA1211.severity = error    # Using 别名指令必须按字母顺序排序
@@ -250,7 +253,7 @@ dotnet_diagnostic.SA1124.severity = error    # 不要使用区域
 dotnet_diagnostic.SA1125.severity = error    # 不要使用 true 或 false 比较
 
 # 间距规则
-dotnet_diagnostic.SA1500.severity = error    # 大括号不应共享行
+dotnet_diagnostic.SA1500.severity = none    # 大括号不应共享行
 dotnet_diagnostic.SA1501.severity = error    # 语句不应在单行上
 dotnet_diagnostic.SA1502.severity = error    # 元素不应在单行上
 dotnet_diagnostic.SA1503.severity = error    # 大括号不应省略
