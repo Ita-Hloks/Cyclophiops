@@ -10,6 +10,8 @@ namespace Cyclophiops.Hardware
 {
     public static class GetDeviceInfo
     {
+        private const int WmiTimeoutSeconds = 10;
+
         public static bool Export(string userPath)
         {
             try
@@ -69,28 +71,54 @@ namespace Cyclophiops.Hardware
 
         private static void AppendSingle(StringBuilder sb, string category, string wmiClass, string[] fields, string where = null)
         {
-            using (var searcher = CreateSearcher(wmiClass, fields, where))
-            using (var results = searcher.Get())
+            try
             {
-                foreach (ManagementObject mo in results)
+                using (var searcher = CreateSearcher(wmiClass, fields, where))
+                using (var results = searcher.Get())
                 {
-                    AppendFields(sb, category, fields, mo, 0);
-                    break;
+                    foreach (ManagementObject mo in results)
+                    {
+                        AppendFields(sb, category, fields, mo, 0);
+                        break;
+                    }
                 }
+            }
+            catch (ManagementException ex)
+            {
+                OutputFile.LogError($"WMI 查询失败 [{wmiClass}]", " ", ex);
+                sb.AppendLine($"{category},ERROR,{ex.Message}");
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+                OutputFile.LogError($"WMI 查询超时或失败 [{wmiClass}]", " ", ex);
+                sb.AppendLine($"{category},TIMEOUT,查询超时({WmiTimeoutSeconds}秒)");
             }
         }
 
         private static void AppendMulti(StringBuilder sb, string category, string wmiClass, string[] fields, string where = null)
         {
-            var idx = 0;
-            using (var searcher = CreateSearcher(wmiClass, fields, where))
-            using (var results = searcher.Get())
+            try
             {
-                foreach (ManagementObject mo in results)
+                var idx = 0;
+                using (var searcher = CreateSearcher(wmiClass, fields, where))
+                using (var results = searcher.Get())
                 {
-                    AppendFields(sb, category, fields, mo, idx);
-                    idx++;
+                    foreach (ManagementObject mo in results)
+                    {
+                        AppendFields(sb, category, fields, mo, idx);
+                        idx++;
+                    }
                 }
+            }
+            catch (ManagementException ex)
+            {
+                OutputFile.LogError($"WMI 查询失败 [{wmiClass}]", " ", ex);
+                sb.AppendLine($"{category},ERROR,{ex.Message}");
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+                OutputFile.LogError($"WMI 查询超时或失败 [{wmiClass}]", " ", ex);
+                sb.AppendLine($"{category},TIMEOUT,查询超时({WmiTimeoutSeconds}秒)");
             }
         }
 
@@ -108,6 +136,7 @@ namespace Cyclophiops.Hardware
                 {
                     ReturnImmediately = true,
                     Rewindable = false,
+                    Timeout = new TimeSpan(0, 0, WmiTimeoutSeconds),
                 },
             };
         }
@@ -152,6 +181,7 @@ namespace Cyclophiops.Hardware
                 }
 
                 var s = Convert.ToString(val, CultureInfo.InvariantCulture);
+
                 if (!string.IsNullOrEmpty(s) && LooksLikeDmtfDatetime(s))
                 {
                     try
@@ -164,12 +194,30 @@ namespace Cyclophiops.Hardware
                     }
                 }
 
+                if (IsMemoryField(propName) && long.TryParse(s, out var bytes))
+                {
+                    return FormatMemorySize(bytes);
+                }
+
                 return s;
             }
             catch
             {
                 return string.Empty;
             }
+        }
+
+        private static bool IsMemoryField(string fieldName)
+        {
+            return fieldName == "TotalPhysicalMemory" ||
+                   fieldName == "Capacity" ||
+                   fieldName == "AdapterRAM" ||
+                   fieldName == "Size";
+        }
+
+        private static string FormatMemorySize(long bytes)
+        {
+            return UnitConverter.FormatBytes(bytes, decimals: 2, showOriginal: true);
         }
 
         private static bool LooksLikeDmtfDatetime(string s)

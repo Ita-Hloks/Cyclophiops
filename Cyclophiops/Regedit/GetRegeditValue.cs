@@ -17,6 +17,10 @@ namespace Cyclophiops.Regedit
                         new[] { "EnableLUA", "ConsentPromptBehaviorAdmin", "ConsentPromptBehaviorUser", "PromptOnSecureDesktop" },
                         "UAC Settings"),
                     new ReadRegeditValue.Config(
+                        @"SOFTWARE\Microsoft\Cryptography",
+                        new[] { "MachineGuid" },
+                        "MachineGuid"),
+                    new ReadRegeditValue.Config(
                         @"SOFTWARE\Microsoft\Windows NT\CurrentVersion",
                         new[] { "ProductName", "CurrentBuild", "DisplayVersion", "RegisteredOwner", "ReleaseId", "BuildLabEx" },
                         "Windows Version Info"),

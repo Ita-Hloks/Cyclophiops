@@ -66,6 +66,7 @@
     <Compile Include="Regedit\Utils\ReadRegeditValue.cs" />
     <Compile Include="Regedit\Utils\RegistryFilter.cs" />
     <Compile Include="Regedit\Utils\SidHelper.cs" />
+    <Compile Include="Export\UnitConverter.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
