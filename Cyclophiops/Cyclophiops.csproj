@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Export\OutputFile.cs" />
+    <Compile Include="Hardware\GetDeviceInfo.cs" />
     <Compile Include="Regedit\GetUserSoftwareDetail.cs" />
     <Compile Include="Regedit\GetRegeditValue.cs" />
     <Compile Include="Regedit\Utils\ReadRegeditList.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Regedit\Utils\ReadRegeditValue.cs" />
     <Compile Include="Regedit\Utils\RegistryFilter.cs" />
     <Compile Include="Regedit\Utils\SidHelper.cs" />
+    <Compile Include="Export\UnitConverter.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -95,6 +98,8 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Hardware\Utils\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

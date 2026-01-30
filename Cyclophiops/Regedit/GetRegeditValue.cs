@@ -15,15 +15,19 @@ namespace Cyclophiops.Regedit
                     new ReadRegeditValue.Config(
                         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System",
                         new[] { "EnableLUA", "ConsentPromptBehaviorAdmin", "ConsentPromptBehaviorUser", "PromptOnSecureDesktop" },
-                        "UAC Settings"),
+                        "UAC_Settings"),
+                    new ReadRegeditValue.Config(
+                        @"SOFTWARE\Microsoft\Cryptography",
+                        new[] { "MachineGuid" },
+                        "MachineGuid"),
                     new ReadRegeditValue.Config(
                         @"SOFTWARE\Microsoft\Windows NT\CurrentVersion",
                         new[] { "ProductName", "CurrentBuild", "DisplayVersion", "RegisteredOwner", "ReleaseId", "BuildLabEx" },
-                        "Windows Version Info"),
+                        "WindowsVersion"),
                     new ReadRegeditValue.Config(
                         @"SYSTEM\CurrentControlSet\Control\TimeZoneInformation",
                         new[] { "TimeZoneKeyName", "Bias" },
-                        "Time Zone Info"),
+                        "TimeZone"),
                 };
                 ReadRegeditValue.ReadMulRegeditToFile(
                     configs);
