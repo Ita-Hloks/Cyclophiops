@@ -6,122 +6,78 @@ namespace Cyclophiops.Export
     {
         public static string FormatBytes(long bytes, int decimals = 2, bool showOriginal = true)
         {
-            if (bytes < 0)
-            {
-                return bytes.ToString();
-            }
-
-            if (bytes == 0)
-            {
-                return showOriginal ? "0 (0 B)" : "0 B";
-            }
-
-            var units = new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-            var unitIndex = 0;
-            var size = (double)bytes;
-
-            while (size >= 1024 && unitIndex < units.Length - 1)
-            {
-                size /= 1024;
-                unitIndex++;
-            }
-
-            var roundedSize = Math.Round(size, decimals);
-            var formatted = roundedSize.ToString("F" + decimals);
-
-            if (showOriginal && bytes >= 1024)
-            {
-                return string.Format("{0} ({1} {2})", bytes, formatted, units[unitIndex]);
-            }
-
-            return string.Format("{0} {1}", formatted, units[unitIndex]);
+            return FormatUnit(bytes, 1024, new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" }, decimals, showOriginal);
         }
 
         public static string FormatBytesAuto(long bytes)
         {
-            if (bytes < 0)
-            {
-                return bytes.ToString();
-            }
-
-            if (bytes == 0)
-            {
-                return "0 B";
-            }
-
-            var units = new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-            var unitIndex = 0;
-            var size = (double)bytes;
-
-            while (size >= 1024 && unitIndex < units.Length - 1)
-            {
-                size /= 1024;
-                unitIndex++;
-            }
-
-            var dec = unitIndex == 0 ? 0 : 2;
-            var roundedSize = Math.Round(size, dec);
-            return roundedSize.ToString("F" + dec) + " " + units[unitIndex];
+            return FormatBytes(bytes, decimals: -1, showOriginal: false);
         }
 
         public static string FormatSpeed(long bytesPerSecond, bool showOriginal = false)
         {
             var formatted = FormatBytes(bytesPerSecond, 2, false);
-            if (showOriginal)
-            {
-                return string.Format("{0} ({1}/s)", bytesPerSecond, formatted);
-            }
-
-            return formatted + "/s";
+            return showOriginal
+                ? string.Format("{0} ({1}/s)", bytesPerSecond, formatted)
+                : formatted + "/s";
         }
 
         public static string FormatFrequency(long hz, int decimals = 2, bool showOriginal = true)
         {
-            if (hz < 0)
+            return FormatUnit(hz, 1000, new[] { "Hz", "kHz", "MHz", "GHz", "THz" }, decimals, showOriginal);
+        }
+
+        public static (double Value, string Unit) ParseBytes(long bytes)
+        {
+            return ParseUnit(bytes, 1024, new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" });
+        }
+
+        private static string FormatUnit(long value, int divisor, string[] units, int decimals, bool showOriginal)
+        {
+            if (value < 0)
             {
-                return hz.ToString();
+                return value.ToString();
             }
 
-            if (hz == 0)
+            if (value == 0)
             {
-                return showOriginal ? "0 (0 Hz)" : "0 Hz";
+                return showOriginal ? "0 (0 " + units[0] + ")" : "0 " + units[0];
             }
 
-            var units = new[] { "Hz", "KHz", "MHz", "GHz", "THz" };
             var unitIndex = 0;
-            var freq = (double)hz;
+            var size = (double)value;
 
-            while (freq >= 1000 && unitIndex < units.Length - 1)
+            while (size >= divisor && unitIndex < units.Length - 1)
             {
-                freq /= 1000;
+                size /= divisor;
                 unitIndex++;
             }
 
-            var roundedFreq = Math.Round(freq, decimals);
-            var formatted = roundedFreq.ToString("F" + decimals);
+            var actualDecimals = decimals == -1 ? (unitIndex == 0 ? 0 : 2) : decimals;
+            var roundedSize = Math.Round(size, actualDecimals);
+            var formatted = roundedSize.ToString("F" + actualDecimals);
 
-            if (showOriginal && hz >= 1000)
+            if (showOriginal && value >= divisor)
             {
-                return string.Format("{0} ({1} {2})", hz, formatted, units[unitIndex]);
+                return string.Format("{0} ({1} {2})", value, formatted, units[unitIndex]);
             }
 
             return string.Format("{0} {1}", formatted, units[unitIndex]);
         }
 
-        public static (double Value, string Unit) ParseBytes(long bytes)
+        private static (double Value, string Unit) ParseUnit(long value, int divisor, string[] units)
         {
-            if (bytes == 0)
+            if (value <= 0)
             {
-                return (0, "B");
+                return (value, units[0]);
             }
 
-            var units = new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
             var unitIndex = 0;
-            var size = (double)bytes;
+            var size = (double)value;
 
-            while (size >= 1024 && unitIndex < units.Length - 1)
+            while (size >= divisor && unitIndex < units.Length - 1)
             {
-                size /= 1024;
+                size /= divisor;
                 unitIndex++;
             }
 
