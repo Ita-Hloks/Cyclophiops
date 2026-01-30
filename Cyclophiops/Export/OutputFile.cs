@@ -9,11 +9,35 @@ namespace Cyclophiops.Export
         private static readonly object _logLock = new object();
         private static string _dailyLogPath;
 
-        public static string EnsureOutputPath(string path = "")
+        public static string EnsureOutputPath(
+            string path = "",
+            Func<string> defaultPathProvider = null,
+            string defaultExtension = ".txt",
+            string baseDir = null)
         {
+            if (defaultPathProvider == null)
+            {
+                defaultPathProvider = GetDailyLogPath;
+            }
+
+            if (string.IsNullOrWhiteSpace(defaultExtension))
+            {
+                defaultExtension = ".txt";
+            }
+
+            if (!defaultExtension.StartsWith("."))
+            {
+                defaultExtension = "." + defaultExtension;
+            }
+
+            if (string.IsNullOrWhiteSpace(baseDir))
+            {
+                baseDir = "D:\\log";
+            }
+
             if (string.IsNullOrWhiteSpace(path) || path == " ")
             {
-                path = GetDailyLogPath();
+                path = defaultPathProvider();
             }
 
             path = path.Replace("/", "\\");
@@ -25,7 +49,18 @@ namespace Cyclophiops.Export
 
             if (!Path.IsPathRooted(path))
             {
-                path = Path.Combine(Directory.GetCurrentDirectory(), path);
+                path = Path.Combine(baseDir, path);
+            }
+
+            if (LooksLikeDirectory(path))
+            {
+                var defaultName = Path.GetFileName(defaultPathProvider());
+                if (string.IsNullOrEmpty(defaultName))
+                {
+                    defaultName = "output" + defaultExtension;
+                }
+
+                path = Path.Combine(path, defaultName);
             }
 
             path = Path.GetFullPath(path);
@@ -38,10 +73,29 @@ namespace Cyclophiops.Export
 
             if (string.IsNullOrEmpty(Path.GetExtension(path)))
             {
-                path = path + ".txt";
+                path = path + defaultExtension;
             }
 
             return path;
+        }
+
+        private static bool LooksLikeDirectory(string p)
+        {
+            if (Directory.Exists(p))
+            {
+                return true;
+            }
+
+            if (p.Length > 0)
+            {
+                var last = p[p.Length - 1];
+                if (last == Path.DirectorySeparatorChar || last == Path.AltDirectorySeparatorChar)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static string GetDailyLogPath()
