@@ -95,7 +95,7 @@ namespace Cyclophiops.Regedit.Utils
                     throw new ArgumentNullException(nameof(result));
                 }
 
-                var filePath = OutputFile.EnsureOutputPath($"D:\\log\\{DateTime.Now:yyyy-MM-dd_HHmmss}_registry_enumerate.txt");
+                var filePath = OutputFile.EnsureOutputPath($"{DateTime.Now:yyyy-MM-dd_HHmmss}_registry_enumerate.txt");
                 var sb = new StringBuilder();
 
                 sb.AppendLine($"Registry Enumerate Export - {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
@@ -110,7 +110,7 @@ namespace Cyclophiops.Regedit.Utils
             }
             catch (Exception ex)
             {
-                OutputFile.LogError("导出注册表枚举失败", " ", ex);
+                OutputFile.LogError("导出注册表枚举失败", ex);
                 return false;
             }
         }

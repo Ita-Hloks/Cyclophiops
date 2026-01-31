@@ -6,7 +6,7 @@ using System.Management;
 using System.Text;
 using Cyclophiops.Export;
 
-namespace Cyclophiops.Hardware
+namespace Cyclophiops.WMI
 {
     public static class GetDeviceInfo
     {
@@ -18,7 +18,7 @@ namespace Cyclophiops.Hardware
             {
                 var filePath = OutputFile.EnsureOutputPath(
                     path: userPath,
-                    defaultPathProvider: () => $"D:\\log\\{DateTime.Now:yyyy-MM-dd_HHmmss}_device_info.csv",
+                    defaultPathProvider: () => $"{DateTime.Now:yyyy-MM-dd_HHmmss}_device_info.csv",
                     defaultExtension: ".csv");
 
                 var csv = CollectAsCsv();
@@ -28,7 +28,7 @@ namespace Cyclophiops.Hardware
             }
             catch (Exception ex)
             {
-                OutputFile.LogError("导出设备信息失败", " ", ex);
+                OutputFile.LogError("导出设备信息失败", ex);
                 return false;
             }
         }
@@ -85,12 +85,12 @@ namespace Cyclophiops.Hardware
             }
             catch (ManagementException ex)
             {
-                OutputFile.LogError($"WMI 查询失败 [{wmiClass}]", " ", ex);
+                OutputFile.LogError($"WMI 查询失败 [{wmiClass}]", ex);
                 sb.AppendLine($"{category},ERROR,{ex.Message}");
             }
             catch (System.Runtime.InteropServices.COMException ex)
             {
-                OutputFile.LogError($"WMI 查询超时或失败 [{wmiClass}]", " ", ex);
+                OutputFile.LogError($"WMI 查询超时或失败 [{wmiClass}]", ex);
                 sb.AppendLine($"{category},TIMEOUT,查询超时({WmiTimeoutSeconds}秒)");
             }
         }
@@ -112,12 +112,12 @@ namespace Cyclophiops.Hardware
             }
             catch (ManagementException ex)
             {
-                OutputFile.LogError($"WMI 查询失败 [{wmiClass}]", " ", ex);
+                OutputFile.LogError($"WMI 查询失败 [{wmiClass}]", ex);
                 sb.AppendLine($"{category},ERROR,{ex.Message}");
             }
             catch (System.Runtime.InteropServices.COMException ex)
             {
-                OutputFile.LogError($"WMI 查询超时或失败 [{wmiClass}]", " ", ex);
+                OutputFile.LogError($"WMI 查询超时或失败 [{wmiClass}]", ex);
                 sb.AppendLine($"{category},TIMEOUT,查询超时({WmiTimeoutSeconds}秒)");
             }
         }

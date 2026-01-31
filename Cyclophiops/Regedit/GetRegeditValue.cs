@@ -34,7 +34,7 @@ namespace Cyclophiops.Regedit
             }
             catch (Exception ex)
             {
-                OutputFile.LogError("注册表获取发送异常", " ", ex);
+                OutputFile.LogError("注册表获取发送异常", ex);
                 return false;
             }
 

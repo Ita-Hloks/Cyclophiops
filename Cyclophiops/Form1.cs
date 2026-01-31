@@ -1,8 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Cyclophiops.Hardware;
+using Cyclophiops.Detail.Browser;
 using Cyclophiops.Regedit;
+using Cyclophiops.WMI;
 
 namespace Cyclophiops
 {
@@ -38,6 +39,11 @@ namespace Cyclophiops
         private void Button3_Click(object sender, EventArgs e)
         {
             Display_Info(GetDeviceInfo.Export(string.Empty), "B3");
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            Display_Info(GetHistory.Get(), "B4");
         }
 
         private void Display_Info(bool result, string text)
