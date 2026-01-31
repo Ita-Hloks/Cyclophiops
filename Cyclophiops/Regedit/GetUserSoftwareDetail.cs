@@ -57,7 +57,7 @@ namespace Cyclophiops.Regedit
             }
             catch (Exception ex)
             {
-                OutputFile.LogError("执行过程中发生异常", " ", ex);
+                OutputFile.LogError("执行过程中发生异常", ex);
                 return false;
             }
         }

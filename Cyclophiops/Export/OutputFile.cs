@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace Cyclophiops.Export
@@ -8,6 +9,13 @@ namespace Cyclophiops.Export
     {
         private static readonly object _logLock = new object();
         private static string _dailyLogPath;
+
+        private static string GetBaseDirectory()
+        {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var exeDir = Path.GetDirectoryName(exePath);
+            return Path.Combine(exeDir, "log");
+        }
 
         public static string EnsureOutputPath(
             string path = "",
@@ -32,10 +40,10 @@ namespace Cyclophiops.Export
 
             if (string.IsNullOrWhiteSpace(baseDir))
             {
-                baseDir = "D:\\log";
+                baseDir = GetBaseDirectory();
             }
 
-            if (string.IsNullOrWhiteSpace(path) || path == " ")
+            if (string.IsNullOrWhiteSpace(path))
             {
                 path = defaultPathProvider();
             }
@@ -102,7 +110,8 @@ namespace Cyclophiops.Export
         {
             if (_dailyLogPath == null || !IsSameDay(_dailyLogPath))
             {
-                _dailyLogPath = $"D:\\log\\{DateTime.Now:yyyy-MM-dd}.log";
+                var logDir = GetBaseDirectory();
+                _dailyLogPath = Path.Combine(logDir, $"{DateTime.Now:yyyy-MM-dd}.log");
             }
 
             return _dailyLogPath;
@@ -122,11 +131,17 @@ namespace Cyclophiops.Export
             }
         }
 
-        public static void LogInfo(string message, string logDirectory = "") => WriteLog("INFO", message, logDirectory);
+        public static void LogInfo(string message, string logDirectory = "")
+        {
+            WriteLog("INFO", message, null, logDirectory);
+        }
 
-        public static void LogError(string message, string logDirectory = "", Exception ex = null) => WriteLog("ERROR", message, logDirectory, ex);
+        public static void LogError(string message, Exception ex = null, string logDirectory = "")
+        {
+            WriteLog("ERROR", message, ex, logDirectory);
+        }
 
-        private static void WriteLog(string level, string message, string logDirectory, Exception ex = null)
+        private static void WriteLog(string level, string message, Exception ex, string logDirectory)
         {
             lock (_logLock)
             {
