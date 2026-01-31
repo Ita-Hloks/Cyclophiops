@@ -1,8 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Cyclophiops.Hardware;
 using Cyclophiops.Regedit;
+using Cyclophiops.WMI;
 
 namespace Cyclophiops
 {

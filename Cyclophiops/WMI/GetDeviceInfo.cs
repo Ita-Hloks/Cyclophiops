@@ -6,7 +6,7 @@ using System.Management;
 using System.Text;
 using Cyclophiops.Export;
 
-namespace Cyclophiops.Hardware
+namespace Cyclophiops.WMI
 {
     public static class GetDeviceInfo
     {

@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Export\OutputFile.cs" />
-    <Compile Include="Hardware\GetDeviceInfo.cs" />
+    <Compile Include="WMI\GetDeviceInfo.cs" />
     <Compile Include="Regedit\GetUserSoftwareDetail.cs" />
     <Compile Include="Regedit\GetRegeditValue.cs" />
     <Compile Include="Regedit\Utils\ReadRegeditList.cs" />
@@ -98,8 +98,6 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Hardware\Utils\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
