@@ -46,6 +46,11 @@ namespace Cyclophiops
             Display_Info(GetHistory.Get(), "B4");
         }
 
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            Display_Info(GetSoftwareResiduals.Get(), "B5");
+        }
+
         private void Display_Info(bool result, string text)
         {
             if (result)
