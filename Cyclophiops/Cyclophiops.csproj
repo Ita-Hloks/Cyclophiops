@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Detail\browser\BookmarksParser.cs" />
+    <Compile Include="Detail\browser\GetBookmarks.cs" />
     <Compile Include="Detail\browser\GetHistory.cs" />
     <Compile Include="Export\OutputFile.cs" />
     <Compile Include="Regedit\GetSoftwareResiduals.cs" />
