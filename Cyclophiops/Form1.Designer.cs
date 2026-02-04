@@ -42,6 +42,7 @@ namespace Cyclophiops
             // 
             // button1
             // 
+            this.button1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button1.Location = new System.Drawing.Point(210, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(180, 40);
@@ -53,6 +54,7 @@ namespace Cyclophiops
             // button2
             // 
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button2.Location = new System.Drawing.Point(24, 66);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(180, 36);
@@ -64,6 +66,7 @@ namespace Cyclophiops
             // button3
             // 
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button3.Location = new System.Drawing.Point(210, 66);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(180, 36);
@@ -75,6 +78,7 @@ namespace Cyclophiops
             // button4
             // 
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button4.Location = new System.Drawing.Point(400, 66);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(180, 36);
@@ -86,6 +90,7 @@ namespace Cyclophiops
             // button5
             // 
             this.button5.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button5.Location = new System.Drawing.Point(24, 113);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(180, 36);
@@ -97,6 +102,7 @@ namespace Cyclophiops
             // button6
             // 
             this.button6.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button6.Location = new System.Drawing.Point(210, 113);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(180, 36);
@@ -108,6 +114,7 @@ namespace Cyclophiops
             // button7
             // 
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button7.Location = new System.Drawing.Point(400, 112);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(180, 36);
