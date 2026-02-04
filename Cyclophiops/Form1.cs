@@ -18,38 +18,7 @@ namespace Cyclophiops
             InitializeComponent();
         }
 
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            ExecuteTask("Basic Information", () => GetRegeditValue.Get());
-        }
-
-        private void Button2_Click(object sender, EventArgs e)
-        {
-            ExecuteTask("Installed Software", () => GetUserSoftwareDetail.Get());
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            AppendLog("System information collector started");
-            AppendLog("Select a task to execute...");
-        }
-
-        private void Button3_Click(object sender, EventArgs e)
-        {
-            ExecuteTask("Hardware Information", () => GetDeviceInfo.Export(string.Empty));
-        }
-
-        private void Button4_Click(object sender, EventArgs e)
-        {
-            ExecuteTask("Browser History", () => GetHistory.Get());
-        }
-
-        private void Button5_Click(object sender, EventArgs e)
-        {
-            ExecuteTask("Software Residuals", () => GetSoftwareResiduals.Get());
-        }
-
-        private async void Button6_ClickAsync(object sender, EventArgs e)
+        private async void Button1_ClickAsync(object sender, EventArgs e)
         {
             try
             {
@@ -61,6 +30,42 @@ namespace Cyclophiops
                 SetStatus("Fatal error occurred", Color.Red);
                 EnableAllButtons();
             }
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            ExecuteTask("Basic Information", () => GetRegeditValue.Get());
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            ExecuteTask("Installed Software", () => GetUserSoftwareDetail.Get());
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            AppendLog("System information collector started");
+            AppendLog("Select a task to execute...");
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            ExecuteTask("Hardware Information", () => GetDeviceInfo.Export(string.Empty));
+        }
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            ExecuteTask("Browser History", () => GetHistory.Get());
+        }
+
+        private void Button6_Click(object sender, EventArgs e)
+        {
+            ExecuteTask("Software Residuals", () => GetSoftwareResiduals.Get());
+        }
+
+        private void Button7_Click(object sender, EventArgs e)
+        {
+            ExecuteTask("Browser Bookmarks", () => GetBookmarks.Get());
         }
 
         private async Task ExecuteAllTasksAsync()
@@ -76,6 +81,7 @@ namespace Cyclophiops
                 new { Name = "Hardware Information", Action = (Func<bool>)(() => GetDeviceInfo.Export(string.Empty)) },
                 new { Name = "Browser History", Action = (Func<bool>)(() => GetHistory.Get()) },
                 new { Name = "Software Residuals", Action = (Func<bool>)(() => GetSoftwareResiduals.Get()) },
+                new { Name = "BookMarks", Action = (Func<bool>)(() => GetBookmarks.Get()) },
             };
 
             var successCount = 0;
@@ -194,12 +200,13 @@ namespace Cyclophiops
 
         private void DisableAllButtons()
         {
-            button1.Enabled = false;
+            button1.Enabled = true;
             button2.Enabled = false;
             button3.Enabled = false;
             button4.Enabled = false;
             button5.Enabled = false;
             button6.Enabled = false;
+            button7.Enabled = false;
         }
 
         private void EnableAllButtons()
@@ -210,6 +217,7 @@ namespace Cyclophiops
             button4.Enabled = true;
             button5.Enabled = true;
             button6.Enabled = true;
+            button7.Enabled = true;
         }
     }
 }

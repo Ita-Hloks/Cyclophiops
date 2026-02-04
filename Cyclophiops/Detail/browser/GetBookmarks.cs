@@ -20,7 +20,7 @@ namespace Cyclophiops.Detail.Browser
                     return false;
                 }
 
-                var outputDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "log", "BrowserBookmarks");
+                var outputDir = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "log");
                 Directory.CreateDirectory(outputDir);
 
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
