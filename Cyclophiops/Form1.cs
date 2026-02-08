@@ -222,9 +222,10 @@ namespace Cyclophiops
 
         private void PathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var f = new SettingsForm())
+            using (var settingsForm = new SettingsForm())
             {
-                f.ShowDialog();
+                settingsForm.Owner = this;
+                settingsForm.ShowDialog();
             }
         }
     }

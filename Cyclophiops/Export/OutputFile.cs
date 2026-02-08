@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
+using Cyclophiops.Config;
 
 namespace Cyclophiops.Export
 {
@@ -12,9 +12,8 @@ namespace Cyclophiops.Export
 
         private static string GetBaseDirectory()
         {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var exeDir = Path.GetDirectoryName(exePath);
-            return Path.Combine(exeDir, "log");
+            var basePath = ExportConfig.GetExportPath();
+            return Path.Combine(basePath, "log");
         }
 
         public static string EnsureOutputPath(
