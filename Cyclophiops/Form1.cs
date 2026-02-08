@@ -219,5 +219,14 @@ namespace Cyclophiops
             button6.Enabled = true;
             button7.Enabled = true;
         }
+
+        private void PathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var settingsForm = new SettingsForm())
+            {
+                settingsForm.Owner = this;
+                settingsForm.ShowDialog();
+            }
+        }
     }
 }
